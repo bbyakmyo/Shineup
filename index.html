@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪄</text></svg>">
+<title>얼티메이트 샤인 업! 프리즈마 진심 1000%</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+
+  body {
+    min-height: 100vh;
+    display: flex; justify-content: center; align-items: flex-start;
+    padding: 20px 10px;
+    background:
+      radial-gradient(ellipse at 50% 0%, #1e1440, #0f0a28 50%, #080618 100%);
+    font-family: Georgia,'Times New Roman','Malgun Gothic',serif;
+    color: #d8cfe8;
+  }
+
+  @keyframes twinkle {
+    0%,100% { opacity: 0.2; } 50% { opacity: 1; }
+  }
+  @keyframes borderShine {
+    0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; }
+  }
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.18); filter: brightness(1.6) drop-shadow(0 0 10px currentColor); }
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); } 75% { transform: translateX(4px); }
+  }
+
+  .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .star {
+    position: absolute; background: #fff; border-radius: 50%;
+    animation: twinkle 2.5s infinite;
+  }
+
+  .game {
+    position: relative; z-index: 1; width: 100%; max-width: 620px;
+    background: linear-gradient(170deg, rgba(22,14,48,0.96), rgba(10,6,28,0.98));
+    border-radius: 16px; padding: 18px 14px 16px;
+    box-shadow: 0 0 40px rgba(130,94,194,0.25), 0 0 80px rgba(100,60,160,0.12),
+                inset 0 1px 0 rgba(255,255,255,0.04);
+    border: 2px solid transparent; background-clip: padding-box;
+  }
+  .game::before {
+    content:''; position: absolute; inset: -2px; z-index: -1; border-radius: 18px;
+    background: linear-gradient(135deg, #c9a0dc, #6a4e9b, #b886d4, #5a3d8a, #c9a0dc);
+    background-size: 400% 400%; animation: borderShine 6s linear infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+  }
+
+  h1 {
+    text-align: center; font-size: 20px; color: #e8c97a;
+    text-shadow: 0 0 14px rgba(232,201,122,0.45); margin-bottom: 10px;
+  }
+
+  /* ── Setup Palette ── */
+  .setup-bar {
+    display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
+    flex-wrap: wrap; padding: 8px 10px;
+    background: rgba(0,0,0,0.25); border-radius: 10px;
+    border: 1px solid rgba(160,124,197,0.2);
+  }
+  .setup-bar .action-btn {
+    padding: 5px 12px; font-size: 11px; font-family: inherit;
+    border: 1px solid rgba(160,124,197,0.4); border-radius: 14px;
+    cursor: pointer; color: #c9b0e8; transition: all 0.2s;
+    background: rgba(60,20,110,0.4); margin-left: 6px;
+  }
+  .setup-bar .action-btn:hover { border-color: #e8c97a; color: #e8c97a; }
+  .setup-bar .action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  #setupCounter { font-size: 12px; color: #e8c97a; margin-left: auto; }
+
+  /* ── AI Panel ── */
+  .ai-panel {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 10px 12px; margin-top: 10px;
+    background: rgba(0,0,0,0.3); border-radius: 10px;
+    border: 1px solid rgba(160,124,197,0.25);
+  }
+  .ai-panel .ai-badge {
+    font-size: 20px; flex-shrink: 0; line-height: 1; margin-top: 2px;
+  }
+  .ai-body {
+    flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0;
+  }
+  #aiReasoning {
+    font-size: 12px; line-height: 1.5; color: #d0e0f0;
+    padding: 4px 8px; background: rgba(0,0,0,0.2); border-radius: 6px;
+  }
+  .ai-split {
+    display: flex; gap: 8px;
+  }
+  .ai-card {
+    flex: 1; padding: 8px 10px;
+    background: rgba(0,0,0,0.3); border-radius: 8px;
+    border: 1px solid rgba(160,124,197,0.2);
+    font-size: 11px; line-height: 1.55; color: #d0e0f0;
+  }
+  .ai-card-label {
+    font-weight: bold; margin-bottom: 3px; font-size: 11px;
+  }
+  .rec-card { border-color: rgba(255,215,0,0.35); }
+  .rec-card .ai-card-label { color: #ffd700; }
+  .second-card .ai-card-label { color: #c0c0c0; }
+  .ai-hl { color: #ffd700; font-weight: bold; }
+  .ai-note { color: #a0c0f0; }
+
+  /* ── Group Priority Buttons ── */
+  .group-bar {
+    display: flex; align-items: center; gap: 6px; margin-top: 8px;
+    padding: 6px 10px; flex-wrap: wrap;
+    background: rgba(0,0,0,0.25); border-radius: 8px;
+    border: 1px solid rgba(160,124,197,0.2);
+  }
+  .group-bar .label { font-size: 12px; color: #c9b0e8; margin-right: 4px; white-space: nowrap; }
+  .group-btn {
+    padding: 5px 14px; font-size: 12px; font-family: inherit;
+    border-radius: 18px; cursor: pointer; transition: all 0.2s;
+    border: 1px solid rgba(160,124,197,0.35); color: #c9b0e8;
+    background: rgba(40,15,80,0.4);
+  }
+  .group-btn:hover { border-color: #e8c97a; color: #e8c97a; }
+  .group-btn.active {
+    border-color: #e8c97a; color: #e8c97a; font-weight: bold;
+    background: linear-gradient(135deg, rgba(120,60,180,0.5), rgba(80,30,140,0.6));
+    box-shadow: 0 0 10px rgba(232,201,122,0.25);
+  }
+  .group-bar .hint { font-size: 10px; color: #8070a0; margin-left: auto; }
+
+  /* ── Board ── */
+  .board-wrap {
+    position: relative; width: 100%; border-radius: 12px;
+    background: radial-gradient(circle at 50% 44%, rgba(120,68,168,0.18), rgba(15,8,35,0.45));
+    border: 1px solid rgba(160,124,197,0.25); overflow: hidden;
+  }
+  .board-wrap::after {
+    content:''; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+    background: radial-gradient(circle at 50% 44%, transparent 28%, rgba(0,0,0,0.35) 100%);
+  }
+  #board { display: block; width: 100%; height: auto; position: relative; z-index: 1; }
+  .edge { stroke: #1e2e5e; stroke-width: 2; opacity: 0.65; }
+
+  .heart { cursor: pointer; transition: transform 0.18s, filter 0.18s; }
+  .heart:hover { transform: scale(1.14); filter: brightness(1.35) drop-shadow(0 0 6px currentColor); }
+  .heart path { stroke: rgba(255,255,255,0.55); stroke-width: 1; }
+  .heart .shine { fill: rgba(255,255,255,0.5); pointer-events: none; }
+  .heart .heart-label {
+    font-size: 11px; fill: rgba(255,255,255,0.9);
+    text-anchor: middle; dominant-baseline: central;
+    paint-order: stroke; stroke: rgba(0,0,0,0.75);
+    stroke-width: 3px; pointer-events: none; font-weight: bold;
+    font-family: 'Malgun Gothic','Segoe UI',sans-serif;
+  }
+  .heart.labels-off .heart-label,
+  #hearts.labels-off .heart-label { display: none; }
+
+  .heart.opened {
+    cursor: default; transform: scale(1.28);
+    filter: brightness(1.15) saturate(1.2) drop-shadow(0 0 10px currentColor);
+  }
+  .heart.opened:hover { transform: scale(1.28); }
+  .heart.opened .shine { fill: rgba(255,255,255,0.32); }
+  .heart.success { animation: heartbeat 0.4s ease; }
+  .heart.shake { animation: shake 0.3s ease; }
+
+  .group-label { pointer-events: none; }
+
+  /* Setup / reselect dots per heart */
+  .setup-dots { display: none; }
+  #board.setup-mode .setup-dots,
+  #board.reselect-mode .setup-dots { display: block; }
+  /* reselect 중에는 이미 열린 하트만 점 숨김 */
+  #board.reselect-mode .heart.opened .setup-dots { display: none; }
+  .heart-dot { cursor: pointer; pointer-events: none; }
+  .heart-dot-hit { cursor: pointer; }
+
+  /* Heart label centering */
+  .heart .heart-label { font-size: 10px; }
+
+  /* ── Game Control Bar ── */
+  .game-ctrl {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-top: 6px; padding: 6px 10px;
+    background: rgba(0,0,0,0.22); border-radius: 10px;
+    border: 1px solid rgba(160,124,197,0.2);
+  }
+  .game-ctrl .action-btn {
+    padding: 6px 14px; font-size: 12px; font-weight: bold;
+    font-family: inherit; border: 1px solid rgba(160,124,197,0.4);
+    border-radius: 14px; cursor: pointer; color: #e8c97a;
+    background: rgba(50,15,120,0.4); transition: all 0.15s;
+  }
+  .game-ctrl .action-btn:hover {
+    border-color: #e8c97a; box-shadow: 0 0 10px rgba(160,124,197,0.3);
+  }
+  .game-ctrl .action-btn:active { transform: scale(0.95); }
+
+  /* ── Gauge ── */
+  .gauge-wrap {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 12px; padding: 10px 14px;
+    background: linear-gradient(135deg, rgba(22,14,48,0.8), rgba(10,6,28,0.65));
+    border: 1.5px solid rgba(160,124,197,0.4); border-radius: 30px;
+  }
+  .gauge-wrap .label { font-size: 12px; font-weight: bold; color: #c9b0e8; white-space: nowrap; }
+  .gauge { flex: 1; height: 12px; background: rgba(0,0,0,0.45); border-radius: 10px; overflow: hidden; border: 1px solid rgba(160,124,197,0.25); }
+  #gaugeFill { height: 100%; background: linear-gradient(90deg, #6a4ecc, #b86eda, #d878a8); border-radius: 10px; transition: width 0.4s ease; box-shadow: inset 0 1px 0 rgba(255,255,255,0.25); }
+  #gaugeText { min-width: 34px; text-align: center; font-weight: bold; color: #e8c97a; font-size: 16px; }
+
+  /* ── Gauge Control (게이지 위에 배치, 크게) ── */
+  .gauge-ctrl-wrap {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: 12px; padding: 8px 12px;
+    background: rgba(0,0,0,0.30); border-radius: 14px;
+    border: 1px solid rgba(160,124,197,0.25);
+  }
+  .gauge-adj {
+    padding: 8px 16px; font-size: 14px; font-weight: bold;
+    border: 1.5px solid rgba(160,124,197,0.4); border-radius: 8px;
+    cursor: pointer; color: #c9b0e8; background: rgba(40,15,80,0.6);
+    font-family: inherit; transition: all 0.15s;
+    min-width: 44px; text-align: center;
+  }
+  .gauge-adj:hover { border-color: #e8c97a; color: #e8c97a; background: rgba(80,30,140,0.6); }
+  .gauge-adj:active { transform: scale(0.94); }
+  #gaugeInput {
+    width: 52px; text-align: center; -moz-text-align-last: center;
+    font-size: 15px; font-weight: bold;
+    background: rgba(0,0,0,0.5); border: 1.5px solid rgba(160,124,197,0.4);
+    border-radius: 8px; color: #ffd700; font-family: inherit; padding: 6px 0;
+    -moz-appearance: textfield;
+  }
+  #gaugeInput::-webkit-outer-spin-button,
+  #gaugeInput::-webkit-inner-spin-button {
+    -webkit-appearance: none; margin: 0;
+  }
+
+  /* ── Status ── */
+  .status {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; margin-top: 10px; font-size: 13px; flex-wrap: wrap;
+  }
+  #openedText { color: #c9b0e8; }
+  #buffText { color: #90eea0; font-weight: bold; }
+
+  /* ── Log ── */
+  #log {
+    margin-top: 10px; height: 90px; overflow-y: auto;
+    background: rgba(0,0,0,0.32); border-radius: 8px;
+    border: 1px solid rgba(160,124,197,0.15);
+    padding: 8px 12px; font-size: 12px; line-height: 1.7;
+    scrollbar-width: thin; scrollbar-color: rgba(160,124,197,0.25) transparent;
+  }
+  #log .ok { color: #90eea0; }
+  #log .fail { color: #f09090; }
+  #log .effect { color: #a0c8f0; }
+
+  /* ── Table ── */
+  table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 11px; background: rgba(0,0,0,0.25); border-radius: 8px; overflow: hidden; }
+  th,td { border: 1px solid rgba(160,124,197,0.18); padding: 4px 5px; text-align: center; }
+  th { background: linear-gradient(135deg, rgba(100,50,160,0.35), rgba(50,20,110,0.25)); color: #e8c97a; font-weight: bold; }
+  td:first-child { font-weight: bold; }
+
+  /* ── Overlay ── */
+  #overlay {
+    position: absolute; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px;
+    background: rgba(8,4,20,0.88); border-radius: 12px; text-align: center;
+  }
+  #overlay.hidden { display: none; }
+  #overlayTitle { font-size: 28px; color: #e8c97a; text-shadow: 0 0 20px rgba(232,201,122,0.45); }
+  #overlayDesc { font-size: 15px; color: #c9b0e8; }
+  #overlay button {
+    padding: 10px 30px; font-size: 15px; font-family: inherit;
+    border: 1px solid #e8c97a; border-radius: 25px; cursor: pointer;
+    background: linear-gradient(135deg, rgba(100,50,160,0.4), rgba(50,20,110,0.55));
+    color: #e8c97a; transition: all 0.3s;
+  }
+  #overlay button:hover { background: linear-gradient(135deg, rgba(140,80,200,0.5), rgba(80,30,140,0.65)); box-shadow: 0 0 24px rgba(160,124,197,0.4); }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 480px) {
+    body { padding: 6px; }
+    .game { padding: 10px 6px; border-radius: 12px; }
+    h1 { font-size: 16px; }
+    .setup-bar { gap: 4px; padding: 6px 8px; }
+    table { font-size: 10px; }
+    #log { height: 70px; }
+    .gauge-wrap .label { font-size: 10px; }
+    .gauge-adj { padding: 4px 8px; font-size: 11px; min-width: 32px; }
+    #gaugeInput { width: 36px; font-size: 13px; }
+    .game-ctrl .action-btn { font-size: 10px; padding: 4px 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+
+<div class="game">
+  <h1>✦ 얼티메이트 샤인 업! ✦</h1>
+
+  <div class="game-ctrl hidden" id="gameCtrl">
+    <button class="action-btn" id="prevStepBtn" title="색상 선택으로 돌아가기">◀ 이전</button>
+    <button class="action-btn" id="editStepBtn" title="남은 하트 색상 편집">✎ 편집</button>
+    <button class="action-btn" id="nextStepBtn" title="이전 상태로">다음 ▶</button>
+    <button class="action-btn" id="toggleLabelsBtn">번호 OFF</button>
+    <button class="action-btn" id="restartBtn">리셋</button>
+  </div>
+
+  <div class="setup-bar" id="setupBar">
+    <span id="setupCounter">0/12</span>
+    <button class="action-btn" id="randomSetupBtn">랜덤 배치</button>
+    <button class="action-btn" id="startGameBtn" disabled>게임 시작 ▶</button>
+  </div>
+
+  <div class="setup-bar reselect-bar hidden" id="reselectBar">
+    <span class="label">파랑 효과: 남은 하트 색상을 다시 선택하세요</span>
+    <button class="action-btn" id="reselectDoneBtn">완료 ▶</button>
+  </div>
+
+  <div class="board-wrap">
+    <svg id="board" viewBox="0 0 500 440">
+      <defs>
+        <linearGradient id="rainbowGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ff5a5a"/><stop offset="25%" stop-color="#ffcf3a"/>
+          <stop offset="50%" stop-color="#5ad87a"/><stop offset="75%" stop-color="#4a90ff"/>
+          <stop offset="100%" stop-color="#b878ff"/>
+        </linearGradient>
+      </defs>
+      <g id="edges"></g>
+      <g id="group-labels"></g>
+      <g id="hearts"></g>
+    </svg>
+    <div id="overlay" class="hidden">
+      <div id="overlayTitle"></div>
+      <div id="overlayDesc"></div>
+      <button id="overlayRestart">다시 시작</button>
+    </div>
+  </div>
+
+<!-- AI Panel -->
+  <div class="ai-panel hidden" id="aiPanel">
+    <span class="ai-badge">🪄</span>
+    <div class="ai-body">
+      <div id="aiReasoning"></div>
+      <div class="ai-split">
+        <div class="ai-card rec-card" id="aiRecCard">
+          <div class="ai-card-label">🎯 추천</div>
+          <div id="aiRec"></div>
+        </div>
+        <div class="ai-card second-card" id="aiSecondCard">
+          <div class="ai-card-label">🥈 차선</div>
+          <div id="aiSecond"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Group Priority Bar -->
+  <div class="group-bar hidden" id="groupBar">
+    <span class="label">그룹 가중치:</span>
+    <button class="group-btn" data-group="1">1그룹</button>
+    <button class="group-btn" data-group="2">2그룹</button>
+    <button class="group-btn" data-group="3">3그룹</button>
+    <span class="hint">미선택시 전체 완성 우선 · 게임 중 변경 가능</span>
+  </div>
+
+  <div class="gauge-ctrl-wrap hidden" id="gaugeCtrl">
+    <button class="gauge-adj" data-delta="-10">-10</button>
+    <button class="gauge-adj" data-delta="-1">-1</button>
+    <input type="number" id="gaugeInput" value="100" min="0" max="100" step="1">
+    <button class="gauge-adj" data-delta="1">+1</button>
+    <button class="gauge-adj" data-delta="10">+10</button>
+  </div>
+
+  <div class="gauge-wrap">
+    <span class="label">사랑과 정의의 힘</span>
+    <div class="gauge"><div id="gaugeFill"></div></div>
+    <span id="gaugeText">100</span>
+  </div>
+
+  <div class="status">
+    <span id="openedText">열린 하트 0 / 12</span>
+    <span id="buffText"></span>
+  </div>
+
+  <div id="log"></div>
+
+  <table>
+    <tr><th>색깔</th><th>성공</th><th>실패 감소</th><th>특수 효과</th></tr>
+    <tr><td style="color:#ff5f7e">빨강</td><td>65%</td><td>15~25</td><td>없음</td></tr>
+    <tr><td style="color:#63c8f2">파랑</td><td>55%</td><td>20~35</td><td>남은 하트 색상 다시 선택</td></tr>
+    <tr><td style="color:#ffd93d">노랑</td><td>55%</td><td>20~35</td><td>게이지 +15</td></tr>
+    <tr><td style="color:#6bcb77">초록</td><td>50%</td><td>25~35</td><td>다음 성공률 +20%</td></tr>
+    <tr><td style="color:#b878ff">레인보우</td><td>35%</td><td>35~50</td><td>연결 프리즘 체인 오픈</td></tr>
+  </table>
+</div>
+
+<script>
+'use strict';
+
+/* ================= 상수 ================= */
+const COLOR_STATS = {
+  red:     { name:'빨강',    prob:0.65, failMin:15, failMax:25, fill:'#ff5f7e' },
+  blue:    { name:'파랑',    prob:0.55, failMin:20, failMax:35, fill:'#63c8f2' },
+  yellow:  { name:'노랑',    prob:0.55, failMin:20, failMax:35, fill:'#ffd93d' },
+  green:   { name:'초록',    prob:0.50, failMin:25, failMax:35, fill:'#6bcb77' },
+  rainbow: { name:'레인보우', prob:0.35, failMin:35, failMax:50, fill:'url(#rainbowGrad)' },
+  none:    { name:'미지정',   prob:0,    failMin:0,  failMax:0,  fill:'#555' },
+};
+const ALL_COLORS  = ['red','blue','yellow','green','rainbow'];
+const YELLOW_HEAL = 15;
+const GREEN_BUFF  = 0.20;
+const GAUGE_MAX   = 100;
+
+const HEART_POSITIONS = [
+  { id:0,  x:250, y:60  }, { id:1,  x:110, y:105 }, { id:2,  x:390, y:105 },
+  { id:3,  x:55,  y:205 }, { id:4,  x:250, y:180 }, { id:5,  x:445, y:205 },
+  { id:6,  x:175, y:270 }, { id:7,  x:325, y:270 }, { id:8,  x:85,  y:320 },
+  { id:9,  x:415, y:320 }, { id:10, x:180, y:390 }, { id:11, x:320, y:390 },
+];
+
+const VISUAL_EDGES = [
+  [0,1],[1,3],[3,8],[8,10],[10,11],[11,9],[9,5],[5,2],[2,0],
+  [10,6],[6,3],[0,4],[4,2],[4,7],[7,9]
+];
+
+// 체인: VISUAL_EDGES에서 직접 연결된 인접 하트들 (본인 포함)
+function buildChain(edges) {
+  const map = {};
+  for (const [a, b] of edges) {
+    if (!map[a]) map[a] = [a];
+    if (!map[b]) map[b] = [b];
+    if (!map[a].includes(b)) map[a].push(b);
+    if (!map[b].includes(a)) map[b].push(a);
+  }
+  return map;
+}
+const CHAIN_MAP = buildChain(VISUAL_EDGES);
+
+const GROUP_LABELS = [
+  { ids:[3,8,10,6] }, { ids:[0,4,2] }, { ids:[2,4,7,9,5] }
+];
+
+const GROUP_DEFS = { 1:[3,8,10,6], 2:[0,4,2], 3:[2,4,7,9,5] };
+let groupPriority = []; // 사용자 선택 그룹 (예: [1,2])
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const HEART_PATH = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 ' +
+  'C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09 ' +
+  'C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5 c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
+
+/* ================= 상태 ================= */
+const $ = id => document.getElementById(id);
+
+let hearts, state, lastClickTime, timers = [];
+let mode = 'setup';          // 'setup' | 'play' | 'reselect'
+let userColorChoices = {};   // { id: 'red'|'blue'|... }
+let aiChoice = null;
+let history = [];            // undo/redo snapshots
+let historyIdx = -1;
+
+function randInt(min,max) { return Math.floor(Math.random()*(max-min+1))+min; }
+function setTimeoutTracked(fn,ms) {
+  const t = setTimeout(()=>{ timers=timers.filter(x=>x!==t); fn(); }, ms);
+  timers.push(t); return t;
+}
+function clearAllTimers() { timers.forEach(t=>clearTimeout(t)); timers=[]; }
+
+function captureState() {
+  return {
+    gauge: state.gauge,
+    opened: [...state.opened],
+    buff: state.buff,
+    attempts: state.attempts,
+    over: state.over,
+    heartColors: hearts.map(h => h.color),
+    m: mode,
+  };
+}
+
+function restoreState(snap) {
+  state.gauge = snap.gauge;
+  state.opened = new Set(snap.opened);
+  state.buff = snap.buff;
+  state.attempts = snap.attempts;
+  state.over = snap.over;
+  hearts.forEach((h, i) => { h.color = snap.heartColors[i]; });
+
+  if (snap.m !== mode) {
+    mode = snap.m;
+    if (mode === 'reselect') {
+      $('board').classList.add('reselect-mode');
+      $('reselectBar').classList.remove('hidden');
+      $('aiPanel').classList.add('hidden');
+      $('gaugeCtrl').classList.add('hidden');
+    } else {
+      $('board').classList.remove('reselect-mode');
+      $('reselectBar').classList.add('hidden');
+      $('gameCtrl').classList.remove('hidden');
+      $('aiPanel').classList.remove('hidden');
+      $('gaugeCtrl').classList.remove('hidden');
+    }
+  }
+
+  $('gaugeInput').value = state.gauge;
+  aiChoice = null;
+  render();
+  if (mode === 'play' && !state.over) aiAnalyze();
+}
+
+function pushHistory() {
+  history = history.slice(0, historyIdx + 1);
+  history.push(captureState());
+  historyIdx = history.length - 1;
+}
+
+/* ================= Setup Mode ================= */
+function initSetup() {
+  clearAllTimers(); lastClickTime = 0; mode = 'setup'; aiChoice = null;
+  history = []; historyIdx = -1;
+  hearts = HEART_POSITIONS.map(h => ({ ...h, color: 'none' }));
+  userColorChoices = {};
+  hearts.forEach(h => { userColorChoices[h.id] = 'none'; });
+
+  $('setupBar').classList.remove('hidden');
+  $('reselectBar').classList.add('hidden');
+  $('gameCtrl').classList.add('hidden');
+  $('aiPanel').classList.add('hidden');
+  $('groupBar').classList.add('hidden');
+  $('log').innerHTML = '';
+  $('overlay').classList.add('hidden');
+  $('aiReasoning').textContent = 'AI 분석 결과가 여기에 표시됩니다. 먼저 색상을 설정하고 게임을 시작하세요.';
+  $('startGameBtn').disabled = true;
+  // 그룹 버튼 리셋
+  groupPriority = [];
+  document.querySelectorAll('.group-btn').forEach(b => b.classList.remove('active'));
+  // setup 모드
+  $('board').classList.add('setup-mode');
+  $('gaugeCtrl').classList.add('hidden');
+
+  drawBoard();
+  updateSetupCounter();
+  renderSetup();
+}
+
+function updateSetupCounter() {
+  const assigned = Object.values(userColorChoices).filter(c => c !== 'none').length;
+  $('setupCounter').textContent = `${assigned}/12`;
+  $('startGameBtn').disabled = assigned < 12;
+}
+
+function assignColor(heartId, color) {
+  if (mode !== 'setup' && mode !== 'reselect') return;
+  userColorChoices[heartId] = color;
+  hearts[heartId].color = color;
+
+  const h = hearts[heartId];
+  if (h.el) {
+    const path = h.el.querySelector('path');
+    if (path) {
+      path.setAttribute('fill', COLOR_STATS[color].fill);
+      path.style.color = COLOR_STATS[color].fill;
+    }
+  }
+  if (mode === 'setup') updateSetupCounter();
+}
+
+function randomSetup() {
+  if (mode !== 'setup') return;
+  // Ensure at least one rainbow at positions 0, 6, 11 for chain
+  hearts.forEach(h => { assignColor(h.id, ALL_COLORS[randInt(0,4)]); });
+  assignColor(0, 'rainbow');
+  assignColor(6, 'rainbow');
+  assignColor(11, 'rainbow');
+  drawBoard();
+  updateSetupCounter();
+}
+
+/* ================= Play Mode ================= */
+function startGame() {
+  if (Object.values(userColorChoices).filter(c=>c==='none').length > 0) return;
+
+  clearAllTimers(); lastClickTime = 0;
+  mode = 'play'; aiChoice = null;
+
+  hearts = HEART_POSITIONS.map(h => ({ ...h, color: userColorChoices[h.id] }));
+  state = { gauge: GAUGE_MAX, opened: new Set(), buff: 0, attempts: 0, over: false };
+  history = [captureState()]; historyIdx = 0;
+
+  $('setupBar').classList.add('hidden');
+  $('reselectBar').classList.add('hidden');
+  $('gameCtrl').classList.remove('hidden');
+  $('board').classList.remove('setup-mode');
+  $('board').classList.remove('reselect-mode');
+  $('aiPanel').classList.remove('hidden');
+  $('groupBar').classList.remove('hidden');
+  $('board').classList.remove('setup-mode');
+  $('gaugeCtrl').classList.remove('hidden');
+  $('log').innerHTML = '';
+  $('overlay').classList.add('hidden');
+  $('gaugeInput').value = state.gauge;
+  $('aiReasoning').textContent = '게임이 시작되었습니다. AI가 실시간 분석 중입니다...';
+
+  drawBoard();
+  render();
+  log('게임 시작!', 'effect');
+
+  // 시작 직후 AI 분석 자동 실행
+  aiAnalyze();
+}
+
+function resetPlay() {
+  clearAllTimers(); lastClickTime = 0; aiChoice = null;
+  hearts = HEART_POSITIONS.map(h => ({ ...h, color: userColorChoices[h.id] }));
+  state = { gauge: GAUGE_MAX, opened: new Set(), buff: 0, attempts: 0, over: false };
+
+$('log').innerHTML = '';
+  $('overlay').classList.add('hidden');
+  $('groupBar').classList.remove('hidden');
+  $('board').classList.remove('setup-mode');
+  $('board').classList.remove('reselect-mode');
+  $('gaugeCtrl').classList.remove('hidden');
+  $('gaugeInput').value = state.gauge;
+  $('aiReasoning').textContent = 'AI 분석을 시작하려면 "AI 분석" 버튼을 클릭하세요.';
+
+  drawBoard();
+  render();
+  log('게임 재시작!', 'effect');
+  aiAnalyze();
+}
+
+/* ================= Board Rendering ================= */
+function drawBoard() {
+  const edgesG = $('edges'), heartsG = $('hearts'), labelsG = $('group-labels');
+  if (!edgesG||!heartsG||!labelsG) return;
+  edgesG.innerHTML = ''; heartsG.innerHTML = ''; labelsG.innerHTML = '';
+
+  for (const [a,b] of VISUAL_EDGES) {
+    if (!hearts[a]||!hearts[b]) continue;
+    const l = document.createElementNS(SVG_NS,'line');
+    l.setAttribute('x1',hearts[a].x); l.setAttribute('y1',hearts[a].y);
+    l.setAttribute('x2',hearts[b].x); l.setAttribute('y2',hearts[b].y);
+    l.classList.add('edge'); edgesG.appendChild(l);
+  }
+
+  for (const h of hearts) {
+    const posG = document.createElementNS(SVG_NS,'g');
+    posG.setAttribute('transform',`translate(${h.x},${h.y})`);
+
+    const heartG = document.createElementNS(SVG_NS,'g');
+    heartG.classList.add('heart');
+    heartG.dataset.id = h.id;
+
+    const path = document.createElementNS(SVG_NS,'path');
+    path.setAttribute('d',HEART_PATH);
+    path.setAttribute('transform','translate(-12,-13) scale(1.35)');
+    heartG.appendChild(path);
+
+    const shine = document.createElementNS(SVG_NS,'ellipse');
+    shine.setAttribute('cx',-4.5); shine.setAttribute('cy',-6.5);
+    shine.setAttribute('rx',3.5); shine.setAttribute('ry',2.2);
+    shine.setAttribute('transform','rotate(-20)');
+    shine.classList.add('shine'); heartG.appendChild(shine);
+
+    const label = document.createElementNS(SVG_NS,'text');
+    label.setAttribute('x',2);
+    label.setAttribute('y',1);
+    label.classList.add('heart-label');
+    label.textContent = h.id; heartG.appendChild(label);
+
+    // Setup dots: 하트마다 5색 팔레트 (setup 모드에서만 보임)
+    const dotsG = document.createElementNS(SVG_NS,'g');
+    dotsG.classList.add('setup-dots');
+    const DOT_FILLS = { red:'#ff5f7e', blue:'#63c8f2', yellow:'#ffd93d', green:'#6bcb77', rainbow:'url(#rainbowGrad)' };
+    const DOT_COLORS = ['red','blue','yellow','green','rainbow'];
+    DOT_COLORS.forEach((c,i) => {
+      // 안정적 클릭: 넓은 투명 히트영역 + 시각적 점
+      const hit = document.createElementNS(SVG_NS,'circle');
+      hit.setAttribute('cx', (i-2)*14);
+      hit.setAttribute('cy', 28);
+      hit.setAttribute('r', 11);
+      hit.setAttribute('fill', 'transparent');
+      hit.classList.add('heart-dot-hit');
+      hit.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        if (mode === 'setup') assignColor(h.id, c);
+        else if (mode === 'reselect' && !state.opened.has(h.id)) assignColor(h.id, c);
+      });
+      dotsG.appendChild(hit);
+
+      const dot = document.createElementNS(SVG_NS,'circle');
+      dot.setAttribute('cx', (i-2)*14);
+      dot.setAttribute('cy', 28);
+      dot.setAttribute('r', 7);
+      dot.setAttribute('fill', DOT_FILLS[c]);
+      dot.setAttribute('stroke','rgba(255,255,255,0.6)');
+      dot.setAttribute('stroke-width', 0.6);
+      dot.classList.add('heart-dot');
+      dotsG.appendChild(dot);
+    });
+    heartG.appendChild(dotsG);
+
+    heartG.addEventListener('click', () => onHeartClick(h));
+    posG.appendChild(heartG);
+    heartsG.appendChild(posG);
+    h.el = heartG;
+  }
+
+  // Group labels
+  const GROUP_NUMS = ['1','2','3'];
+  for (let gi = 0; gi < GROUP_LABELS.length; gi++) {
+    const gl = GROUP_LABELS[gi];
+    let cx=0,cy=0;
+    gl.ids.forEach(id=>{ const h=hearts[id]; if(h){ cx+=h.x; cy+=h.y; }});
+    cx/=gl.ids.length; cy/=gl.ids.length;
+
+    const lg = document.createElementNS(SVG_NS,'g');
+    lg.setAttribute('transform',`translate(${cx},${cy})`);
+    lg.classList.add('group-label');
+    lg.dataset.ids = gl.ids.join(',');
+
+    const c = document.createElementNS(SVG_NS,'circle');
+    c.setAttribute('r',15); c.setAttribute('fill','rgba(0,0,0,0.55)');
+    c.setAttribute('stroke','rgba(200,160,230,0.4)'); c.setAttribute('stroke-width',1);
+    lg.appendChild(c);
+
+    const t = document.createElementNS(SVG_NS,'text');
+    t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','central');
+    t.setAttribute('x',-1); t.setAttribute('y',-1);
+    t.setAttribute('fill','#e8c97a'); t.setAttribute('font-size','11');
+    t.setAttribute('font-weight','bold');
+    t.classList.add('group-label-text');
+    t.textContent = mode==='play' ? `0/${gl.ids.length}` : `${gl.ids.length}`;
+    lg.appendChild(t);
+
+    // 그룹 번호
+    const gn = document.createElementNS(SVG_NS,'text');
+    gn.setAttribute('text-anchor','middle'); gn.setAttribute('y', 24);
+    gn.setAttribute('fill','#c9b0e8'); gn.setAttribute('font-size','9');
+    gn.textContent = GROUP_NUMS[gi] + '그룹';
+    lg.appendChild(gn);
+
+    labelsG.appendChild(lg);
+  }
+}
+
+function renderSetup() {
+  for (const h of hearts) {
+    if (!h.el) continue;
+    const path = h.el.querySelector('path');
+    if (path) {
+      path.setAttribute('fill', COLOR_STATS[h.color].fill);
+      path.style.color = COLOR_STATS[h.color].fill;
+    }
+  }
+}
+
+function render() {
+  const gf=$('gaugeFill'), gt=$('gaugeText'), ot=$('openedText'), bt=$('buffText');
+  if(gf) gf.style.width = (state.gauge/GAUGE_MAX*100)+'%';
+  if(gt) gt.textContent = state.gauge;
+  if(ot) ot.textContent = `열린 하트 ${state.opened.size}/12`;
+  if(bt) bt.textContent = state.buff>0 ? `다음 성공률 +${Math.round(state.buff*100)}%` :'';
+
+  // Group labels
+  const labels = document.getElementsByClassName('group-label');
+  for (const label of labels) {
+    const ids = label.dataset.ids.split(',').map(Number);
+    const opened = ids.filter(id => state.opened.has(id)).length;
+    const t = label.querySelector('.group-label-text');
+    if (t) t.textContent = `${opened}/${ids.length}`;
+  }
+
+  for (const h of hearts) {
+    if (!h.el) continue;
+    const path = h.el.querySelector('path');
+    if (path) {
+      path.setAttribute('fill', COLOR_STATS[h.color].fill);
+      path.style.color = COLOR_STATS[h.color].fill;
+    }
+    h.el.classList.toggle('opened', state.opened.has(h.id));
+  }
+}
+
+function log(msg, cls='') {
+  const le = $('log'); if(!le) return;
+  const d = document.createElement('div'); if(cls) d.className = cls;
+  d.textContent = msg; le.prepend(d);
+  while(le.children.length>30) le.lastChild.remove();
+}
+
+/* ================= Game Logic ================= */
+function onHeartClick(h) {
+  if (mode === 'setup' || mode === 'reselect') return;
+
+  // Play mode — 모든 클릭 강제 성공 (실패 시뮬레이션은 게이지 직접 조절)
+  if (state.over || state.opened.has(h.id)) return;
+  const now = Date.now();
+  if (now - lastClickTime < 200) return;
+  lastClickTime = now;
+  if (!h||!h.el) return;
+
+  state.attempts++; state.buff = 0;
+
+  // Always succeed
+  succeed(h);
+  if (!state.over && state.opened.size === hearts.length) endGame(true);
+
+  $('gaugeInput').value = state.gauge;
+  render();
+  if (mode === 'play' && !state.over) {
+    aiAnalyze();
+  }
+
+  pushHistory();
+}
+
+function succeed(h) {
+  const st = COLOR_STATS[h.color];
+  log(`${st.name} 하트 성공!`, 'ok');
+  h.el.classList.add('success');
+  setTimeoutTracked(()=>{ if(h.el) h.el.classList.remove('success'); }, 400);
+
+  if (h.color === 'blue') {
+    state.opened.add(h.id);
+    // 파랑: 남은 하트 색상을 직접 다시 선택하도록 reselect 모드 진입
+    enterReselect();
+    return;
+  }
+
+  state.opened.add(h.id);
+  applyEffect(h);
+}
+
+function applyEffect(h) {
+  switch (h.color) {
+    case 'yellow':
+      state.gauge = Math.min(GAUGE_MAX, state.gauge + YELLOW_HEAL);
+      $('gaugeInput').value = state.gauge;
+      log(`→ 사랑과 정의의 힘 +${YELLOW_HEAL} 회복!`, 'effect');
+      break;
+    case 'green':
+      state.buff += GREEN_BUFF;
+      log(`→ 다음 성공률 +${Math.round(GREEN_BUFF*100)}% 상승!`, 'effect');
+      break;
+    case 'rainbow': {
+      const chain = CHAIN_MAP[h.id] || [h.id];
+      let count = 0;
+      for (const nid of chain) {
+        if (!state.opened.has(nid)) { state.opened.add(nid); count++; }
+      }
+      if (count>0) log(`→ 연결된 프리즘 ${count}개 추가 오픈! (특수효과 미발동)`, 'effect');
+      break;
+    }
+  }
+}
+
+function enterReselect() {
+  mode = 'reselect';
+  $('board').classList.add('reselect-mode');
+  $('board').classList.remove('setup-mode');
+  $('reselectBar').classList.remove('hidden');
+  $('aiPanel').classList.add('hidden');
+  $('gaugeCtrl').classList.add('hidden');
+  render();
+  log('→ 파랑 성공! 남은 하트의 색상을 선택하세요.', 'effect');
+}
+
+function reselectDone() {
+  mode = 'play';
+  $('board').classList.remove('reselect-mode');
+  $('reselectBar').classList.add('hidden');
+  $('gameCtrl').classList.remove('hidden');
+  $('aiPanel').classList.remove('hidden');
+  $('gaugeCtrl').classList.remove('hidden');
+  $('gaugeInput').value = state.gauge;
+  render();
+  if (!state.over) {
+aiChoice = null;
+    aiAnalyze();
+  }
+
+  pushHistory();
+}
+
+function endGame(win) {
+  state.over = true;
+  const ov=$('overlay'), ti=$('overlayTitle'), de=$('overlayDesc');
+  if(!ov||!ti||!de) return;
+  ti.textContent = win ? '🎉 모든 하트 오픈!' : '💔 게임 종료';
+  de.textContent = `열린 하트 ${state.opened.size}/12 · 시도 ${state.attempts}회 · 남은 게이지 ${state.gauge}`;
+  ov.classList.remove('hidden');
+  log(win?'모든 하트를 열었습니다!':'사랑과 정의의 힘이 모두 소진되었습니다.', win?'ok':'fail');
+}
+
+/* ================= AI System ================= */
+function aiAnalyze() {
+  if (mode !== 'play' || state.over) {
+    $('aiReasoning').textContent = state.over ? '게임이 이미 종료되었습니다.' : '먼저 색상을 설정하고 게임을 시작하세요.';
+    $('aiRec').innerHTML = '';
+    $('aiSecondCard').style.display = 'none';
+    return;
+  }
+
+  const candidates = hearts.filter(h => !state.opened.has(h.id));
+  if (candidates.length === 0) {
+    $('aiReasoning').textContent = '모든 하트가 열렸습니다!';
+    $('aiRec').innerHTML = '';
+    $('aiSecondCard').style.display = 'none';
+    return;
+  }
+
+  const gaugeRatio = state.gauge / GAUGE_MAX;
+
+  const analyses = candidates.map(h => {
+    const st = COLOR_STATS[h.color];
+    const prob = Math.min(1, st.prob + state.buff);
+    const avgDmg = (st.failMin + st.failMax) / 2;
+    const expectedDmg = (1 - prob) * avgDmg;
+
+    let heartsGain = 1;
+    let special = '';
+
+    if (h.color === 'rainbow') {
+      const chain = CHAIN_MAP[h.id] || [h.id];
+      for (const nid of chain) {
+        if (state.opened.has(nid) || nid === h.id) continue;
+        const ch = hearts[nid];
+        let penalty = 0;
+        if (ch.color === 'green') penalty = 3;
+        else if (ch.color === 'yellow') penalty = gaugeRatio < 0.5 ? 2 : 1;
+        else if (ch.color === 'blue') penalty = 1;
+        heartsGain += (10 - penalty) / 10;
+      }
+      special = `체인 ${heartsGain.toFixed(1)}개 동시 오픈`;
+    } else if (h.color === 'yellow') {
+      special = '게이지 +15 회복';
+    } else if (h.color === 'green') {
+      special = '다음 성공률 +20% 버프';
+    } else if (h.color === 'blue') {
+      special = '전체 색상 랜덤 재배치';
+    }
+
+    // ── EV2: 노랑 회복 가치 + 초록 콤보 보너스 + 연속 리스크
+    let bonus = 0;
+    if (h.color === 'yellow') {
+      // 게이지가 낮을수록 +15 회복이 생존(전체 완성) 가치↑
+      // 2차 곡선 + 계수 강화: 저체력에서 노랑이 안전 하트를 역전하도록
+      bonus = 15 * Math.pow(Math.max(0, 1 - gaugeRatio), 2) * 2.2 * prob;
+      // 게이지 30% 미만: 생존 우선 추가 가산
+      if (gaugeRatio < 0.30) bonus += 4 * prob;
+      special = `게이지 +15 회복 (≈+${bonus.toFixed(1)}점 가치)`;
+    } else if (h.color === 'green') {
+      special = '다음 성공률 +20% 버프';
+    } else if (h.color === 'blue') {
+      special = '전체 색상 랜덤 재배치';
+    }
+
+    // 초록 콤보 보너스: 미개봉 레인보우 있을 때 버프 → 레인보우 콤보 가치
+    const hasUnopenedRainbow = hearts.some(x => x.color === 'rainbow' && !state.opened.has(x.id));
+    if (h.color === 'green' && hasUnopenedRainbow && state.buff === 0) {
+      bonus += 0.20 * 3.2 * 10 * 0.50; // 50% 성공 × 20% × 3.2×10
+      special += ' (레인보우 콤보)';
+    }
+
+    // 연속 리스크 평가 (EV: 게이지<30%만 활성화 → EV2: 부드러운 곡선)
+    const continuousRisk = expectedDmg * Math.max(0, 0.4 - gaugeRatio) * 2.0;
+
+    let score = prob * heartsGain * 10 + bonus - expectedDmg - continuousRisk;
+
+    // ── 그룹 가중치 모드 (ev_group) ──
+    let groupBonus = 0;
+    let groupMode = false;
+    if (groupPriority.length > 0) {
+      // 전체 완성 가능성 평가
+      const avgFailDmg = candidates.reduce((s,c)=>s+(COLOR_STATS[c.color].failMin+COLOR_STATS[c.color].failMax)/2,0)/candidates.length;
+      const avgProb = candidates.reduce((s,c)=>s+Math.min(1,COLOR_STATS[c.color].prob+state.buff),0)/candidates.length;
+      const expFails = candidates.length*(1-avgProb)/avgProb;
+      const estCost = expFails*avgFailDmg;
+      const canAll = state.gauge > estCost*1.3;
+
+      if (!canAll) {
+        // fallback: 그룹 우선 모드
+        groupMode = true;
+        const groupHearts = [];
+        for (const gNum of groupPriority) {
+          for (const hid of (GROUP_DEFS[gNum]||[])) {
+            if (!state.opened.has(hid) && !groupHearts.includes(hid)) groupHearts.push(hid);
+          }
+        }
+        if (groupHearts.includes(h.id)) {
+          groupBonus = 5;
+          if (h.color === 'rainbow') {
+            const chain = CHAIN_MAP[h.id]||[h.id];
+            for (const nid of chain) {
+              if (state.opened.has(nid)||nid===h.id) continue;
+              if (groupHearts.includes(nid)) groupBonus += 3;
+            }
+          }
+        }
+        score += groupBonus;
+      }
+    }
+
+    let groupNote = '';
+    if (groupMode && groupBonus > 0) groupNote = ' [그룹+' + groupBonus + ']';
+
+    return { heart: h, prob, heartsGain, expectedDmg, score, special: special + groupNote };
+  });
+
+  analyses.sort((a, b) => b.score - a.score);
+
+  const top = analyses[0];
+  const second = analyses.length > 1 ? analyses[1] : null;
+
+  let r = '';
+  r += `게이지: <span class="ai-hl">${state.gauge}</span> (${Math.round(gaugeRatio*100)}%)`;
+  if (state.buff > 0) r += ` | 버프: <span class="ai-hl">+${Math.round(state.buff*100)}%</span>`;
+  if (groupPriority.length > 0) {
+    r += ` | 그룹: <span class="ai-hl">${groupPriority.map(g=>g+'그룹').join(', ')}</span>`;
+  } else {
+    r += ` | <span class="ai-note">전체 완성</span>`;
+  }
+  $('aiReasoning').innerHTML = r;
+
+  // 추천
+  let recHtml = '';
+  recHtml += `하트 <span class="ai-hl">#${top.heart.id}</span> <span class="ai-note">${COLOR_STATS[top.heart.color].name} ${Math.round(top.prob*100)}%</span><br>`;
+  recHtml += `이득 ${top.heartsGain}개 · 피해 ${Math.round(top.expectedDmg)}<br>`;
+  if (top.special) recHtml += `<span class="ai-note">${top.special}</span>`;
+  $('aiRec').innerHTML = recHtml;
+
+  // 차선
+  if (second) {
+    let secHtml = '';
+    secHtml += `하트 <span class="ai-hl">#${second.heart.id}</span> <span class="ai-note">${COLOR_STATS[second.heart.color].name} ${Math.round(second.prob*100)}%</span><br>`;
+    secHtml += `이득 ${second.heartsGain}개 · 피해 ${Math.round(second.expectedDmg)}`;
+    if (second.special) secHtml += `<br><span class="ai-note">${second.special}</span>`;
+    $('aiSecond').innerHTML = secHtml;
+    $('aiSecondCard').style.display = '';
+  } else {
+    $('aiSecond').innerHTML = '열 수 있는 하트가 없습니다';
+    $('aiSecondCard').style.display = 'none';
+  }
+
+  if (gaugeRatio < 0.20 && top.expectedDmg > state.gauge * 0.6) {
+    $('aiReasoning').innerHTML += ' ⚠️ 위험!';
+  }
+
+  aiChoice = top.heart;
+}
+
+function aiExecute() {
+  if (!aiChoice || state.over) {
+    $('aiReasoning').innerHTML = '실행할 추천이 없습니다.';
+    return;
+  }
+  onHeartClick(aiChoice);
+
+  // 자동으로 다음 분석 실행
+  setTimeout(() => {
+    if (!state.over) aiAnalyze();
+  }, 300);
+}
+
+/* ================= Gauge Controls ================= */
+document.querySelectorAll('.gauge-adj').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (mode !== 'play' || state.over) return;
+    const delta = parseInt(btn.dataset.delta);
+    state.gauge = Math.max(0, Math.min(GAUGE_MAX, state.gauge + delta));
+$('gaugeInput').value = state.gauge;
+    $('overlay').classList.add('hidden');
+    aiChoice = null;
+    render();
+    aiAnalyze();
+  });
+});
+$('gaugeInput').addEventListener('change', () => {
+  if (mode !== 'play' || state.over) return;
+  state.gauge = Math.max(0, Math.min(GAUGE_MAX, parseInt($('gaugeInput').value)||0));
+  $('gaugeInput').value = state.gauge;
+  aiChoice = null;
+  render();
+  aiAnalyze();
+});
+
+/* ================= Event Binding ================= */
+$('randomSetupBtn').addEventListener('click', randomSetup);
+$('startGameBtn').addEventListener('click', startGame);
+$('reselectDoneBtn').addEventListener('click', reselectDone);
+$('restartBtn').addEventListener('click', () => {
+  initSetup();
+});
+$('overlayRestart').addEventListener('click', () => {
+  initSetup();
+});
+
+$('prevStepBtn').addEventListener('click', () => {
+  if (historyIdx > 0) { historyIdx--; restoreState(history[historyIdx]); }
+  else if (mode === 'play' || mode === 'reselect') initSetup();
+});
+$('editStepBtn').addEventListener('click', () => {
+  if (mode === 'play' && !state.over) enterReselect();
+});
+$('nextStepBtn').addEventListener('click', () => {
+  if (historyIdx < history.length - 1) { historyIdx++; restoreState(history[historyIdx]); }
+});
+$('toggleLabelsBtn').addEventListener('click', () => {
+  const g = $('hearts'); if (!g) return;
+  const hidden = g.classList.toggle('labels-off');
+  $('toggleLabelsBtn').textContent = hidden ? '번호 ON' : '번호 OFF';
+});
+
+// Group priority buttons (게임 중 언제든 변경 가능)
+document.querySelectorAll('.group-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const gNum = parseInt(btn.dataset.group);
+    if (btn.classList.contains('active')) {
+      btn.classList.remove('active');
+      groupPriority = groupPriority.filter(g => g !== gNum);
+    } else {
+      btn.classList.add('active');
+      groupPriority.push(gNum);
+    }
+    // 즉시 AI 재분석 (게임 중 변경 즉시 반영)
+    if (mode === 'play' && !state.over) {
+if (aiChoice && aiChoice.el) {}
+      aiAnalyze();
+    }
+  });
+});
+
+/* ================= Starfield ================= */
+(function initStars() {
+  const c = $('stars'); if (!c) return;
+  for (let i=0;i<70;i++) {
+    const s = document.createElement('div'); s.className='star';
+    s.style.left=Math.random()*100+'%'; s.style.top=Math.random()*100+'%';
+    s.style.width=s.style.height=(1+Math.random()*2)+'px';
+    s.style.animationDelay=Math.random()*4+'s';
+    s.style.animationDuration=(1.5+Math.random()*3)+'s';
+    c.appendChild(s);
+  }
+})();
+
+initSetup();
+</script>
+</body>
+</html>
