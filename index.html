@@ -965,8 +965,9 @@ function drawBoard() {
     shine.classList.add('shine'); heartG.appendChild(shine);
 
     const label = document.createElementNS(SVG_NS,'text');
-    label.setAttribute('x',2);
-    label.setAttribute('y',1);
+    // ★ 하트 중간 숫자 위치: x, y값 변경으로 좌우/상하 조정
+    label.setAttribute('x',4);
+    label.setAttribute('y',3);
     label.classList.add('heart-label');
     label.textContent = h.id; heartG.appendChild(label);
 
@@ -1027,17 +1028,18 @@ function drawBoard() {
     lg.appendChild(c);
 
     const t = document.createElementNS(SVG_NS,'text');
+    // ★ 그룹 안 숫자 (0/4 등) 위치: x,y값으로 상대 조정, font-size로 크기
     t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','central');
-    t.setAttribute('x',-1); t.setAttribute('y',-1);
+    t.setAttribute('x',0); t.setAttribute('y',-1);
     t.setAttribute('fill','#e8c97a'); t.setAttribute('font-size','11');
     t.setAttribute('font-weight','bold');
     t.classList.add('group-label-text');
     t.textContent = mode==='play' ? `0/${gl.ids.length}` : `${gl.ids.length}`;
     lg.appendChild(t);
 
-    // 그룹 번호
+    // ★ 그룹 이름 (1그룹/2그룹/3그룹) 위치: y값으로 상하, font-size로 크기, fill로 색상
     const gn = document.createElementNS(SVG_NS,'text');
-    gn.setAttribute('text-anchor','middle'); gn.setAttribute('y', 24);
+    gn.setAttribute('text-anchor','middle'); gn.setAttribute('y', 27);
     gn.setAttribute('fill','#c9b0e8'); gn.setAttribute('font-size','9');
     gn.textContent = GROUP_NUMS[gi] + '그룹';
     lg.appendChild(gn);
