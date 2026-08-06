@@ -59,15 +59,66 @@
   h1 {
     text-align: center; font-size: 20px; color: #e8c97a;
     text-shadow: 0 0 14px rgba(232,201,122,0.45); margin-bottom: 10px;
+    position: relative;
+  }
+  .guide-btn {
+    position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+    padding: 3px 10px; font-size: 14px; font-family: inherit;
+    border: 1px solid rgba(160,124,197,0.4); border-radius: 8px;
+    cursor: pointer; color: #c9b0e8; transition: all 0.2s;
+    background: rgba(60,20,110,0.4); line-height: 1;
+  }
+  .guide-btn:hover { border-color: #e8c97a; color: #e8c97a; }
+
+ /* ── Input Timer Progress Bar (게이지 컨트롤 상단 가로줄) ── */
+  .input-timer-bar {
+    width: 100%; height: 3px; background: rgba(100,60,160,0.2);
+    border-radius: 2px; overflow: hidden; flex-basis: 100%;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .input-timer-bar.active { opacity: 1; }
+  #inputTimerFill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #6a4ecc, #d878a8);
+    border-radius: 2px;
+  }
+  .input-timer-bar.active { opacity: 1; }
+  #inputTimerFill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #6a4ecc, #d878a8);
+    border-radius: 1px;
   }
 
   /* ── Setup Palette ── */
   .setup-bar {
-    display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
-    flex-wrap: wrap; padding: 8px 10px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin-bottom: 10px; padding: 10px 14px;
     background: rgba(0,0,0,0.25); border-radius: 10px;
     border: 1px solid rgba(160,124,197,0.2);
   }
+  .setup-main { display: flex; align-items: center; width: 100%; }
+  #setupCounter { font-size: 28px; color: #ffd700; font-weight: 900; text-shadow: 0 0 14px rgba(255,215,0,0.6); }
+  #startGameBtn {
+    flex: 1; padding: 10px 0; font-size: 16px; font-weight: 900;
+    border: 2px solid #ffd700; color: #ffd700; border-radius: 14px;
+    background: linear-gradient(135deg, rgba(160,100,40,0.5), rgba(100,50,20,0.4));
+    box-shadow: 0 0 14px rgba(255,215,0,0.3); cursor: pointer;
+    font-family: inherit; transition: all 0.2s;
+  }
+  #startGameBtn:hover:not(:disabled) { border-color: #fff; color: #fff; box-shadow: 0 0 20px rgba(255,215,0,0.6); }
+  #startGameBtn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+
+  /* ── Reset Bar ── */
+  .reset-bar {
+    display: flex; justify-content: center; margin-bottom: 8px;
+  }
+  .reset-bar .action-btn {
+    padding: 10px 40px; font-size: 15px; font-weight: 900;
+    border: 2px solid #f09090; color: #f09090; border-radius: 14px;
+    cursor: pointer; background: rgba(80,20,20,0.5);
+    font-family: inherit; transition: all 0.15s;
+  }
+  .reset-bar .action-btn:hover { border-color: #ff6060; color: #ff6060; box-shadow: 0 0 12px rgba(240,80,80,0.4); }
   .setup-bar .action-btn {
     padding: 5px 12px; font-size: 11px; font-family: inherit;
     border: 1px solid rgba(160,124,197,0.4); border-radius: 14px;
@@ -76,7 +127,6 @@
   }
   .setup-bar .action-btn:hover { border-color: #e8c97a; color: #e8c97a; }
   .setup-bar .action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  #setupCounter { font-size: 12px; color: #e8c97a; margin-left: auto; }
 
   /* ── AI Panel ── */
   .ai-panel {
@@ -215,33 +265,63 @@
   #gaugeFill { height: 100%; background: linear-gradient(90deg, #6a4ecc, #b86eda, #d878a8); border-radius: 10px; transition: width 0.4s ease; box-shadow: inset 0 1px 0 rgba(255,255,255,0.25); }
   #gaugeText { min-width: 34px; text-align: center; font-weight: bold; color: #e8c97a; font-size: 16px; }
 
-  /* ── Gauge Control (게이지 위에 배치, 크게) ── */
+  /* ── Gauge Control (보드 위에 배치) ── */
   .gauge-ctrl-wrap {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    margin-top: 12px; padding: 8px 12px;
-    background: rgba(0,0,0,0.30); border-radius: 14px;
-    border: 1px solid rgba(160,124,197,0.25);
+    position: absolute; top: 4px; left: 50%; transform: translateX(-50%);
+    display: flex; justify-content: center; gap: 6px;
+    flex-wrap: wrap; padding: 3px 10px 5px; z-index: 5;
+    background: rgba(0,0,0,0.55); border-radius: 20px;
+    border: 1px solid rgba(160,124,197,0.35);
+  }
+  .gauge-row {
+    display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;
   }
   .gauge-adj {
-    padding: 8px 16px; font-size: 14px; font-weight: bold;
+    padding: 6px 10px; font-size: 13px; font-weight: bold;
     border: 1.5px solid rgba(160,124,197,0.4); border-radius: 8px;
     cursor: pointer; color: #c9b0e8; background: rgba(40,15,80,0.6);
     font-family: inherit; transition: all 0.15s;
-    min-width: 44px; text-align: center;
+    min-width: 36px; text-align: center;
   }
   .gauge-adj:hover { border-color: #e8c97a; color: #e8c97a; background: rgba(80,30,140,0.6); }
   .gauge-adj:active { transform: scale(0.94); }
   #gaugeInput {
-    width: 52px; text-align: center; -moz-text-align-last: center;
-    font-size: 15px; font-weight: bold;
+    width: 48px; text-align: center; -moz-text-align-last: center;
+    font-size: 14px; font-weight: bold;
     background: rgba(0,0,0,0.5); border: 1.5px solid rgba(160,124,197,0.4);
-    border-radius: 8px; color: #ffd700; font-family: inherit; padding: 6px 0;
+    border-radius: 8px; color: #ffd700; font-family: inherit; padding: 4px 0;
     -moz-appearance: textfield;
   }
   #gaugeInput::-webkit-outer-spin-button,
-  #gaugeInput::-webkit-inner-spin-button {
-    -webkit-appearance: none; margin: 0;
+  #gaugeInput::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  #gaugeSlider {
+    -webkit-appearance: none; width: 80px; height: 6px;
+    background: linear-gradient(90deg, #6a4ecc, #d878a8); border-radius: 3px;
+    outline: none; cursor: pointer;
   }
+  #gaugeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 18px; height: 18px;
+    background: #e8c97a; border-radius: 50%; border: 2px solid rgba(0,0,0,0.4);
+    cursor: pointer;
+  }
+  #gaugeSlider::-moz-range-thumb {
+    width: 18px; height: 18px; background: #e8c97a;
+    border-radius: 50%; border: 2px solid rgba(0,0,0,0.4); cursor: pointer;
+  }
+
+  /* ── Circular Color Palette (피자모양 5조각) ── */
+  .color-palette {
+    position: fixed; z-index: 100; pointer-events: none; display: none;
+    width: 130px; height: 130px;
+  }
+  .color-palette.visible { display: block; }
+  .palette-slice {
+    stroke: rgba(255,255,255,0.7); stroke-width: 1.5;
+    cursor: pointer; pointer-events: auto;
+    transition: opacity 0.1s;
+  }
+  .palette-slice:hover { opacity: 0.8; stroke: #e8c97a; stroke-width: 2.5; }
+  .palette-key { display: none; }
 
   /* ── Status ── */
   .status {
@@ -264,7 +344,7 @@
   #log .effect { color: #a0c8f0; }
 
   /* ── Table ── */
-  table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 11px; background: rgba(0,0,0,0.25); border-radius: 8px; overflow: hidden; }
+  table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 11px; font-family: 'Nanum Gothic','Malgun Gothic',sans-serif; font-weight: 500; background: rgba(0,0,0,0.25); border-radius: 8px; overflow: hidden; }
   th,td { border: 1px solid rgba(160,124,197,0.18); padding: 4px 5px; text-align: center; }
   th { background: linear-gradient(135deg, rgba(100,50,160,0.35), rgba(50,20,110,0.25)); color: #e8c97a; font-weight: bold; }
   td:first-child { font-weight: bold; }
@@ -385,6 +465,129 @@
     font-weight: 700; font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
   }
 
+  /* ── Capture Overlay ── */
+  #captureOverlay { position: fixed; inset: 0; z-index: 200; }
+  #captureOverlay.hidden { display: none; }
+  .capture-backdrop {
+    position: absolute; inset: 0; background: rgba(8,4,20,0.92);
+  }
+  .capture-panel {
+    position: absolute; inset: 20px; display: flex; flex-direction: column;
+    background: linear-gradient(170deg, rgba(22,14,48,0.98), rgba(10,6,28,0.99));
+    border-radius: 16px; padding: 14px 16px;
+    border: 2px solid rgba(160,124,197,0.4);
+    box-shadow: 0 0 40px rgba(130,94,194,0.4);
+    font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
+  }
+  .capture-header {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 16px; color: #e8c97a; font-weight: 800;
+    padding-bottom: 8px; margin-bottom: 4px;
+    border-bottom: 1px solid rgba(160,124,197,0.25);
+  }
+  #captureCloseBtn {
+    background: none; border: none; color: #c9b0e8; font-size: 22px;
+    cursor: pointer; font-family: inherit;
+  }
+  #captureCloseBtn:hover { color: #e8c97a; }
+  .capture-video-wrap {
+    position: relative; flex: 1; margin: 8px 0; overflow: hidden;
+    border-radius: 10px; border: 1.5px solid rgba(160,124,197,0.3);
+    background: #000;
+  }
+  #captureVideo {
+    width: 100%; height: 100%; object-fit: contain;
+  }
+  .capture-guide {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    pointer-events: none;
+  }
+  .capture-guide .cap-dot {
+    fill: rgba(255,255,255,0.8); stroke: rgba(0,0,0,0.6); stroke-width: 1;
+    pointer-events: none;
+  }
+  .capture-guide .cap-label {
+    font-size: 10px; fill: #fff; text-anchor: middle;
+    dominant-baseline: central; font-weight: 700; paint-order: stroke;
+    stroke: rgba(0,0,0,0.8); stroke-width: 2px; font-family: inherit;
+    pointer-events: none;
+  }
+  .capture-actions {
+    display: flex; justify-content: center; gap: 12px;
+    margin-top: 10px; padding-top: 8px;
+    border-top: 1px solid rgba(160,124,197,0.2);
+  }
+  .capture-actions button {
+    padding: 8px 24px; font-size: 14px; font-weight: 700;
+    font-family: inherit; border-radius: 14px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  #captureAnalyzeBtn {
+    border: 1px solid #e8c97a; color: #e8c97a;
+    background: linear-gradient(135deg, rgba(100,50,160,0.4), rgba(50,20,110,0.55));
+  }
+  #captureAnalyzeBtn:hover:not(:disabled) { border-color: #ffd700; box-shadow: 0 0 14px rgba(160,124,197,0.4); }
+  #captureAnalyzeBtn:disabled { opacity: 0.3; cursor: not-allowed; }
+  #captureTemplateBtn {
+    border: 1px solid #a0d0ff; color: #a0d0ff;
+    background: linear-gradient(135deg, rgba(40,80,120,0.4), rgba(20,40,80,0.55));
+  }
+  #captureTemplateBtn:hover:not(:disabled) { border-color: #c0e0ff; box-shadow: 0 0 14px rgba(160,208,255,0.4); }
+  #captureTemplateBtn:disabled { opacity: 0.3; cursor: not-allowed; }
+  #captureCancelBtn {
+    border: 1px solid rgba(160,124,197,0.4); color: #c9b0e8;
+    background: rgba(40,15,80,0.5);
+  }
+  #captureCancelBtn:hover { border-color: #f09090; color: #f09090; }
+
+  /* ── Capture Calibration ── */
+  #captureCalibration {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    pointer-events: auto; cursor: crosshair;
+  }
+  .calib-point {
+    fill: rgba(232,201,122,0.9); stroke: rgba(0,0,0,0.8); stroke-width: 2;
+    filter: drop-shadow(0 0 6px rgba(232,201,122,0.8));
+  }
+  .calib-label {
+    font-size: 12px; fill: #e8c97a; font-weight: 800;
+    text-anchor: middle; dominant-baseline: central; paint-order: stroke;
+    stroke: rgba(0,0,0,0.8); stroke-width: 3px; font-family: inherit;
+    pointer-events: none;
+  }
+  .calib-polygon {
+    fill: rgba(232,201,122,0.08); stroke: rgba(232,201,122,0.6);
+    stroke-width: 2; stroke-dasharray: 6 4; pointer-events: none;
+  }
+  .preview-heart {
+    cursor: pointer; transition: transform 0.15s;
+  }
+  .preview-heart:hover { transform: scale(1.2); }
+  .preview-heart .ph-fill {
+    stroke: rgba(255,255,255,0.6); stroke-width: 1.5;
+  }
+  .preview-heart .ph-label {
+    font-size: 10px; fill: #fff; text-anchor: middle;
+    dominant-baseline: central; font-weight: 700; paint-order: stroke;
+    stroke: rgba(0,0,0,0.8); stroke-width: 2px; pointer-events: none;
+  }
+  .preview-heart.unknown .ph-fill { fill: #555 !important; }
+  .capture-status {
+    text-align: center; font-size: 12px; color: #d0e0f0;
+    margin: 4px 0; min-height: 18px;
+  }
+  #captureApplyBtn {
+    border: 1px solid #90eea0; color: #90eea0;
+    background: linear-gradient(135deg, rgba(40,120,60,0.4), rgba(20,80,40,0.55));
+  }
+  #captureApplyBtn:hover:not(:disabled) { border-color: #c0ffc0; box-shadow: 0 0 14px rgba(144,238,160,0.4); }
+  #captureApplyBtn:disabled { opacity: 0.3; cursor: not-allowed; }
+  #captureResetCalibBtn {
+    border: 1px solid rgba(160,124,197,0.4); color: #c9b0e8;
+    background: rgba(40,15,80,0.5);
+  }
+  #captureResetCalibBtn:hover { border-color: #e8c97a; color: #e8c97a; }
+
   /* ── Guide Board (가상 게임 시각화) ── */
   .guide-board {
     display: block; width: 100%; max-width: 460px; height: auto;
@@ -467,21 +670,23 @@
 <div class="stars" id="stars"></div>
 
 <div class="game">
-  <h1>✦ 얼티메이트 샤인 업! ✦</h1>
+  <h1>✦ 얼티메이트 샤인 업! ✦ <button class="guide-btn" id="guideBtn" title="공략 가이드">📖 공략</button></h1>
+
+  <div class="reset-bar hidden" id="resetBar">
+    <button class="action-btn" id="restartBtn">↺ 리셋</button>
+  </div>
 
   <div class="game-ctrl hidden" id="gameCtrl">
-    <button class="action-btn" id="prevStepBtn" title="색상 선택으로 돌아가기">◀ 이전</button>
-    <button class="action-btn" id="editStepBtn" title="남은 하트 색상 편집">✎ 편집</button>
-    <button class="action-btn" id="nextStepBtn" title="이전 상태로">다음 ▶</button>
-    <button class="action-btn" id="toggleLabelsBtn">번호 OFF</button>
-    <button class="action-btn" id="restartBtn">리셋</button>
+    <button class="action-btn" id="prevStepBtn" title="이전">◀ 이전</button>
+    <button class="action-btn" id="nextStepBtn" title="다음">다음 ▶</button>
+    <button class="action-btn" id="editStepBtn" title="남은 하트 색상 편집" style="margin-left:auto">✎ 편집</button>
   </div>
 
   <div class="setup-bar" id="setupBar">
-    <button class="action-btn" id="guideBtn" title="공략 가이드">📖 공략</button>
-    <span id="setupCounter">0/12</span>
-    <button class="action-btn" id="randomSetupBtn">랜덤 배치</button>
-    <button class="action-btn" id="startGameBtn" disabled>게임 시작 ▶</button>
+    <span id="setupCounter">0 / 12</span>
+    <div class="setup-main">
+      <button class="action-btn" id="startGameBtn" disabled>게임 시작 ▶</button>
+    </div>
   </div>
 
   <div class="setup-bar reselect-bar hidden" id="reselectBar">
@@ -490,6 +695,17 @@
   </div>
 
   <div class="board-wrap">
+    <div class="gauge-ctrl-wrap hidden" id="gaugeCtrl">
+      <div class="input-timer-bar" id="inputTimerBar"><div id="inputTimerFill"></div></div>
+    <div class="gauge-row">
+      <button class="gauge-adj" data-delta="-10">-10</button>
+      <button class="gauge-adj" data-delta="-1">-1</button>
+      <input type="range" id="gaugeSlider" value="100" min="0" max="100" step="1">
+      <input type="number" id="gaugeInput" value="100" min="0" max="100" step="1">
+      <button class="gauge-adj" data-delta="1">+1</button>
+      <button class="gauge-adj" data-delta="10">+10</button>
+    </div>
+  </div>
     <svg id="board" viewBox="0 0 500 440">
       <defs>
         <linearGradient id="rainbowGrad" x1="0" y1="0" x2="1" y2="1">
@@ -506,6 +722,19 @@
       <div id="overlayTitle"></div>
       <div id="overlayDesc"></div>
       <button id="overlayRestart">다시 시작</button>
+    </div>
+    <div class="color-palette" id="colorPalette">
+      <svg viewBox="0 0 130 130" style="pointer-events:none">
+        <defs>
+          <linearGradient id="pieRainbowGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ff5a5a"/><stop offset="25%" stop-color="#ffcf3a"/>
+            <stop offset="50%" stop-color="#5ad87a"/><stop offset="75%" stop-color="#4a90ff"/>
+            <stop offset="100%" stop-color="#b878ff"/>
+          </linearGradient>
+        </defs>
+        <g id="paletteSlices" style="pointer-events:auto"></g>
+      </svg>
+      <div class="palette-key" id="paletteKey">0</div>
     </div>
   </div>
 
@@ -536,35 +765,15 @@
     <span class="hint">미선택시 전체 완성 우선 · 게임 중 변경 가능</span>
   </div>
 
-  <div class="gauge-ctrl-wrap hidden" id="gaugeCtrl">
-    <button class="gauge-adj" data-delta="-10">-10</button>
-    <button class="gauge-adj" data-delta="-1">-1</button>
-    <input type="number" id="gaugeInput" value="100" min="0" max="100" step="1">
-    <button class="gauge-adj" data-delta="1">+1</button>
-    <button class="gauge-adj" data-delta="10">+10</button>
-  </div>
-
-  <div class="gauge-wrap">
-    <span class="label">사랑과 정의의 힘</span>
-    <div class="gauge"><div id="gaugeFill"></div></div>
-    <span id="gaugeText">100</span>
-  </div>
-
-  <div class="status">
-    <span id="openedText">열린 하트 0 / 12</span>
-    <span id="buffText"></span>
-  </div>
-
-  <div id="log"></div>
-
   <table>
-    <tr><th>색깔</th><th>성공</th><th>실패 감소</th><th>특수 효과</th></tr>
-    <tr><td style="color:#ff5f7e">빨강</td><td>65%</td><td>15~25</td><td>없음</td></tr>
-    <tr><td style="color:#63c8f2">파랑</td><td>55%</td><td>20~35</td><td>남은 하트 색상 다시 선택</td></tr>
-    <tr><td style="color:#ffd93d">노랑</td><td>55%</td><td>20~35</td><td>게이지 +15</td></tr>
-    <tr><td style="color:#6bcb77">초록</td><td>50%</td><td>25~35</td><td>다음 성공률 +20%</td></tr>
-    <tr><td style="color:#b878ff">레인보우</td><td>35%</td><td>35~50</td><td>연결 프리즘 체인 오픈</td></tr>
+    <tr><th>색깔</th><th>키</th><th>성공</th><th>실패 감소</th><th>특수 효과</th></tr>
+    <tr><td style="color:#ff5f7e">빨강</td><td style="color:#ffd700">1</td><td>65%</td><td>15~25</td><td>없음</td></tr>
+    <tr><td style="color:#ffd93d">노랑</td><td style="color:#ffd700">2</td><td>55%</td><td>20~35</td><td>게이지 +15</td></tr>
+    <tr><td style="color:#6bcb77">초록</td><td style="color:#ffd700">3</td><td>50%</td><td>25~35</td><td>다음 성공률 +20%</td></tr>
+    <tr><td style="color:#63c8f2">파랑</td><td style="color:#ffd700">4</td><td>55%</td><td>20~35</td><td>색상 재배치</td></tr>
+    <tr><td style="color:#b878ff">레인보우</td><td style="color:#ffd700">5</td><td>35%</td><td>35~50</td><td>프리즘 체인</td></tr>
   </table>
+
 </div>
 
 <div class="footer">Shineup_helper powered by 백묘</div>
@@ -697,6 +906,40 @@
   </div>
 </div>
 
+<!-- ── Capture Overlay ── -->
+<div id="captureOverlay" class="hidden">
+  <div class="capture-backdrop"></div>
+  <div class="capture-panel">
+    <div class="capture-header">
+      <span id="captureTitle">📷 화면 캡처 — 하트 색상 자동 입력</span>
+      <button id="captureCloseBtn">×</button>
+    </div>
+    <p id="captureGuideText" style="text-align:center;font-size:13px;color:#a090c0;margin:4px 0">
+      캡처할 화면 선택 후 <b style="color:#a0d0ff">🎯 템플릿 분석</b>을 누르면 image 폴더의 하트 이미지로 자동 인식합니다<br>
+      <span style="font-size:11px">인식 후 미리보기에서 색상을 수정할 수 있어요</span>
+    </p>
+    <div class="capture-status" id="captureStatus"></div>
+    <div class="capture-video-wrap">
+      <video id="captureVideo" autoplay muted playsinline></video>
+      <svg class="capture-guide" viewBox="0 0 500 440" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="captureRainbowGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ff5a5a"/><stop offset="25%" stop-color="#ffcf3a"/>
+            <stop offset="50%" stop-color="#5ad87a"/><stop offset="75%" stop-color="#4a90ff"/>
+            <stop offset="100%" stop-color="#b878ff"/>
+          </linearGradient>
+        </defs>
+        <g id="captureCalibration"></g>
+      </svg>
+    </div>
+    <div class="capture-actions">
+      <button id="captureTemplateBtn" disabled>🎯 템플릿 분석</button>
+      <button id="captureApplyBtn" disabled>✅ 적용</button>
+      <button id="captureCancelBtn">취소</button>
+    </div>
+  </div>
+</div>
+
 <script>
 'use strict';
 
@@ -761,7 +1004,11 @@ let aiChoice = null;
 let history = [];            // undo/redo snapshots
 let historyIdx = -1;
 
-function randInt(min,max) { return Math.floor(Math.random()*(max-min+1))+min; }
+function syncGauge(val) {
+  $('gaugeInput').value = val;
+  const slider = $('gaugeSlider');
+  if (slider) slider.value = val;
+}
 function setTimeoutTracked(fn,ms) {
   const t = setTimeout(()=>{ timers=timers.filter(x=>x!==t); fn(); }, ms);
   timers.push(t); return t;
@@ -798,13 +1045,13 @@ function restoreState(snap) {
     } else {
       $('board').classList.remove('reselect-mode');
       $('reselectBar').classList.add('hidden');
-      $('gameCtrl').classList.remove('hidden');
+      $('gameCtrl').classList.remove('hidden'); $('resetBar').classList.remove('hidden');
       $('aiPanel').classList.remove('hidden');
       $('gaugeCtrl').classList.remove('hidden');
     }
   }
 
-  $('gaugeInput').value = state.gauge;
+  syncGauge(state.gauge);
   aiChoice = null;
   render();
   if (mode === 'play' && !state.over) aiAnalyze();
@@ -820,16 +1067,16 @@ function pushHistory() {
 function initSetup() {
   clearAllTimers(); lastClickTime = 0; mode = 'setup'; aiChoice = null;
   history = []; historyIdx = -1;
+  resetGaugeInputTimer();
   hearts = HEART_POSITIONS.map(h => ({ ...h, color: 'none' }));
   userColorChoices = {};
   hearts.forEach(h => { userColorChoices[h.id] = 'none'; });
 
   $('setupBar').classList.remove('hidden');
   $('reselectBar').classList.add('hidden');
-  $('gameCtrl').classList.add('hidden');
+  $('gameCtrl').classList.add('hidden'); $('resetBar').classList.add('hidden');
   $('aiPanel').classList.add('hidden');
   $('groupBar').classList.add('hidden');
-  $('log').innerHTML = '';
   $('overlay').classList.add('hidden');
   $('aiReasoning').textContent = 'AI 분석 결과가 여기에 표시됩니다. 먼저 색상을 설정하고 게임을 시작하세요.';
   $('startGameBtn').disabled = true;
@@ -837,7 +1084,6 @@ function initSetup() {
   groupPriority = [];
   document.querySelectorAll('.group-btn').forEach(b => b.classList.remove('active'));
   // setup 모드
-  $('board').classList.add('setup-mode');
   $('gaugeCtrl').classList.add('hidden');
 
   drawBoard();
@@ -847,7 +1093,7 @@ function initSetup() {
 
 function updateSetupCounter() {
   const assigned = Object.values(userColorChoices).filter(c => c !== 'none').length;
-  $('setupCounter').textContent = `${assigned}/12`;
+  $('setupCounter').textContent = `${assigned} / 12`;
   $('startGameBtn').disabled = assigned < 12;
 }
 
@@ -891,21 +1137,19 @@ function startGame() {
 
   $('setupBar').classList.add('hidden');
   $('reselectBar').classList.add('hidden');
-  $('gameCtrl').classList.remove('hidden');
+  $('gameCtrl').classList.remove('hidden'); $('resetBar').classList.remove('hidden');
   $('board').classList.remove('setup-mode');
   $('board').classList.remove('reselect-mode');
   $('aiPanel').classList.remove('hidden');
   $('groupBar').classList.remove('hidden');
-  $('board').classList.remove('setup-mode');
   $('gaugeCtrl').classList.remove('hidden');
-  $('log').innerHTML = '';
   $('overlay').classList.add('hidden');
-  $('gaugeInput').value = state.gauge;
+  resetGaugeInputTimer();
+  syncGauge(state.gauge);
   $('aiReasoning').textContent = '게임이 시작되었습니다. AI가 실시간 분석 중입니다...';
 
   drawBoard();
   render();
-  log('게임 시작!', 'effect');
 
   // 시작 직후 AI 분석 자동 실행
   aiAnalyze();
@@ -916,20 +1160,51 @@ function resetPlay() {
   hearts = HEART_POSITIONS.map(h => ({ ...h, color: userColorChoices[h.id] }));
   state = { gauge: GAUGE_MAX, opened: new Set(), buff: 0, attempts: 0, over: false };
 
-$('log').innerHTML = '';
   $('overlay').classList.add('hidden');
   $('groupBar').classList.remove('hidden');
   $('board').classList.remove('setup-mode');
   $('board').classList.remove('reselect-mode');
   $('gaugeCtrl').classList.remove('hidden');
-  $('gaugeInput').value = state.gauge;
+  resetGaugeInputTimer();
+  syncGauge(state.gauge);
   $('aiReasoning').textContent = 'AI 분석을 시작하려면 "AI 분석" 버튼을 클릭하세요.';
 
   drawBoard();
   render();
-  log('게임 재시작!', 'effect');
   aiAnalyze();
 }
+
+let paletteHideTimer = 0;
+function cancelHidePaletteFn() { clearTimeout(paletteHideTimer); }
+function hidePaletteDelayFn() {
+  clearTimeout(paletteHideTimer);
+  paletteHideTimer = setTimeout(() => {
+    const p = $('colorPalette');
+    if (!p || !p.classList.contains('visible')) return;
+    p.classList.remove('visible');
+    hoveredHeartId = -1;
+  }, 200);
+}
+/* ================= [PALETTE] ================= */
+// ★★★ 팔레트 위치 계산 ★★★
+// 하트 중심(h.x, h.y) — SVG viewBox(500x440) 좌표 → SVG createSVGPoint + getScreenCTM()으로
+// 뷰포트 정확한 절대좌표로 변환. offset -65는 팔레트 크기(130px)의 절반.
+function showHeartPalette(h) {
+  cancelHidePaletteFn();
+  hoveredHeartId = h.id;
+  const palette = $('colorPalette');
+  if (!palette) return;
+  const keyEl = $('paletteKey');
+  if (keyEl) keyEl.textContent = h.id;
+  const boardEl = $('board');
+  const pt = boardEl.createSVGPoint();
+  pt.x = h.x; pt.y = h.y;
+  const screenPt = pt.matrixTransform(boardEl.getScreenCTM());
+  palette.style.left = (screenPt.x - 60) + 'px';  // ← 팔레트 X 오프셋 (130px / 2)
+  palette.style.top  = (screenPt.y - 60) + 'px';  // ← 팔레트 Y 오프셋 (130px / 2)
+  palette.classList.add('visible');
+}
+/* ================= [/PALETTE] ================= */
 
 /* ================= Board Rendering ================= */
 function drawBoard() {
@@ -971,37 +1246,21 @@ function drawBoard() {
     label.classList.add('heart-label');
     label.textContent = h.id; heartG.appendChild(label);
 
-    // Setup dots: 하트마다 5색 팔레트 (setup 모드에서만 보임)
-    const dotsG = document.createElementNS(SVG_NS,'g');
-    dotsG.classList.add('setup-dots');
-    const DOT_FILLS = { red:'#ff5f7e', blue:'#63c8f2', yellow:'#ffd93d', green:'#6bcb77', rainbow:'url(#rainbowGrad)' };
-    const DOT_COLORS = ['red','blue','yellow','green','rainbow'];
-    DOT_COLORS.forEach((c,i) => {
-      // 안정적 클릭: 넓은 투명 히트영역 + 시각적 점
-      const hit = document.createElementNS(SVG_NS,'circle');
-      hit.setAttribute('cx', (i-2)*14);
-      hit.setAttribute('cy', 28);
-      hit.setAttribute('r', 11);
-      hit.setAttribute('fill', 'transparent');
-      hit.classList.add('heart-dot-hit');
-      hit.addEventListener('click', (ev) => {
-        ev.stopPropagation();
-        if (mode === 'setup') assignColor(h.id, c);
-        else if (mode === 'reselect' && !state.opened.has(h.id)) assignColor(h.id, c);
-      });
-      dotsG.appendChild(hit);
-
-      const dot = document.createElementNS(SVG_NS,'circle');
-      dot.setAttribute('cx', (i-2)*14);
-      dot.setAttribute('cy', 28);
-      dot.setAttribute('r', 7);
-      dot.setAttribute('fill', DOT_FILLS[c]);
-      dot.setAttribute('stroke','rgba(255,255,255,0.6)');
-      dot.setAttribute('stroke-width', 0.6);
-      dot.classList.add('heart-dot');
-      dotsG.appendChild(dot);
+    // Setup: hover→팔레트, play: click→onHeartClick
+    heartG.addEventListener('mouseenter', () => {
+      if (mode === 'setup' || (mode === 'reselect' && !state?.opened?.has(h.id))) {
+        showHeartPalette(h);
+      }
     });
-    heartG.appendChild(dotsG);
+    heartG.addEventListener('mouseleave', () => { hidePaletteDelayFn(); });
+    heartG.addEventListener('touchstart', (ev) => {
+      if (mode === 'setup' || (mode === 'reselect' && !state?.opened?.has(h.id))) {
+        ev.stopPropagation();
+        showHeartPalette(h);
+      }
+    }, { passive: false });
+    heartG.style.outline = 'none';
+    heartG.setAttribute('tabindex', '0');
 
     heartG.addEventListener('click', () => onHeartClick(h));
     posG.appendChild(heartG);
@@ -1033,6 +1292,7 @@ function drawBoard() {
     t.setAttribute('x',0); t.setAttribute('y',-1);
     t.setAttribute('fill','#e8c97a'); t.setAttribute('font-size','11');
     t.setAttribute('font-weight','bold');
+    t.setAttribute('font-family',"'Nanum Gothic','Malgun Gothic',sans-serif");
     t.classList.add('group-label-text');
     t.textContent = mode==='play' ? `0/${gl.ids.length}` : `${gl.ids.length}`;
     lg.appendChild(t);
@@ -1041,6 +1301,7 @@ function drawBoard() {
     const gn = document.createElementNS(SVG_NS,'text');
     gn.setAttribute('text-anchor','middle'); gn.setAttribute('y', 27);
     gn.setAttribute('fill','#c9b0e8'); gn.setAttribute('font-size','9');
+    gn.setAttribute('font-family',"'Nanum Gothic','Malgun Gothic',sans-serif");
     gn.textContent = GROUP_NUMS[gi] + '그룹';
     lg.appendChild(gn);
 
@@ -1060,12 +1321,6 @@ function renderSetup() {
 }
 
 function render() {
-  const gf=$('gaugeFill'), gt=$('gaugeText'), ot=$('openedText'), bt=$('buffText');
-  if(gf) gf.style.width = (state.gauge/GAUGE_MAX*100)+'%';
-  if(gt) gt.textContent = state.gauge;
-  if(ot) ot.textContent = `열린 하트 ${state.opened.size}/12`;
-  if(bt) bt.textContent = state.buff>0 ? `다음 성공률 +${Math.round(state.buff*100)}%` :'';
-
   // Group labels
   const labels = document.getElementsByClassName('group-label');
   for (const label of labels) {
@@ -1086,12 +1341,7 @@ function render() {
   }
 }
 
-function log(msg, cls='') {
-  const le = $('log'); if(!le) return;
-  const d = document.createElement('div'); if(cls) d.className = cls;
-  d.textContent = msg; le.prepend(d);
-  while(le.children.length>30) le.lastChild.remove();
-}
+function log() { /* removed */ }
 
 /* ================= Game Logic ================= */
 function onHeartClick(h) {
@@ -1110,7 +1360,7 @@ function onHeartClick(h) {
   succeed(h);
   if (!state.over && state.opened.size === hearts.length) endGame(true);
 
-  $('gaugeInput').value = state.gauge;
+  syncGauge(state.gauge);
   render();
   if (mode === 'play' && !state.over) {
     aiAnalyze();
@@ -1140,7 +1390,7 @@ function applyEffect(h) {
   switch (h.color) {
     case 'yellow':
       state.gauge = Math.min(GAUGE_MAX, state.gauge + YELLOW_HEAL);
-      $('gaugeInput').value = state.gauge;
+      syncGauge(state.gauge);
       log(`→ 사랑과 정의의 힘 +${YELLOW_HEAL} 회복!`, 'effect');
       break;
     case 'green':
@@ -1174,10 +1424,10 @@ function reselectDone() {
   mode = 'play';
   $('board').classList.remove('reselect-mode');
   $('reselectBar').classList.add('hidden');
-  $('gameCtrl').classList.remove('hidden');
+  $('gameCtrl').classList.remove('hidden'); $('resetBar').classList.remove('hidden');
   $('aiPanel').classList.remove('hidden');
   $('gaugeCtrl').classList.remove('hidden');
-  $('gaugeInput').value = state.gauge;
+  syncGauge(state.gauge);
   render();
   if (!state.over) {
 aiChoice = null;
@@ -1388,7 +1638,7 @@ document.querySelectorAll('.gauge-adj').forEach(btn => {
     if (mode !== 'play' || state.over) return;
     const delta = parseInt(btn.dataset.delta);
     state.gauge = Math.max(0, Math.min(GAUGE_MAX, state.gauge + delta));
-$('gaugeInput').value = state.gauge;
+    syncGauge(state.gauge);
     $('overlay').classList.add('hidden');
     aiChoice = null;
     render();
@@ -1398,14 +1648,155 @@ $('gaugeInput').value = state.gauge;
 $('gaugeInput').addEventListener('change', () => {
   if (mode !== 'play' || state.over) return;
   state.gauge = Math.max(0, Math.min(GAUGE_MAX, parseInt($('gaugeInput').value)||0));
-  $('gaugeInput').value = state.gauge;
+  syncGauge(state.gauge);
+  aiChoice = null;
+  render();
+  aiAnalyze();
+});
+$('gaugeSlider').addEventListener('input', () => {
+  if (mode !== 'play' || state.over) return;
+  state.gauge = parseInt($('gaugeSlider').value);
+  syncGauge(state.gauge);
   aiChoice = null;
   render();
   aiAnalyze();
 });
 
-/* ================= Event Binding ================= */
-$('randomSetupBtn').addEventListener('click', randomSetup);
+/* ================= Color Palette + Keyboard ================= */
+let hoveredHeartId = -1;
+
+// SVG 파이 조각 생성 (72°씩 5조각)
+function buildPaletteSlices() {
+  const g = $('paletteSlices');
+  if (!g) return;
+  g.innerHTML = '';
+  const cx = 65, cy = 65, R = 60, r = 22;
+  const colors = [
+    { color: 'red',    fill: '#ff5f7e',  label: '1' },
+    { color: 'yellow', fill: '#ffd93d',  label: '2' },
+    { color: 'green',  fill: '#6bcb77',  label: '3' },
+    { color: 'blue',   fill: '#63c8f2',  label: '4' },
+    { color: 'rainbow',fill: 'url(#pieRainbowGrad)', label: '5' },
+  ];
+  const arc = 2 * Math.PI / 5; // 72°
+  for (let i = 0; i < colors.length; i++) {
+    const c = colors[i];
+    const a1 = -Math.PI/2 + i * arc, a2 = a1 + arc; // 12시 시작 시계방향
+    const x1o = cx + R * Math.cos(a1), y1o = cy + R * Math.sin(a1);
+    const x2o = cx + R * Math.cos(a2), y2o = cy + R * Math.sin(a2);
+    const x1i = cx + r * Math.cos(a1), y1i = cy + r * Math.sin(a1);
+    const x2i = cx + r * Math.cos(a2), y2i = cy + r * Math.sin(a2);
+    // 조각 path
+    const path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute('d',
+      `M ${x1o} ${y1o} A ${R} ${R} 0 0 1 ${x2o} ${y2o} ` +
+      `L ${x2i} ${y2i} A ${r} ${r} 0 0 0 ${x1i} ${y1i} Z`
+    );
+    path.setAttribute('fill', c.fill);
+    path.classList.add('palette-slice');
+    path.dataset.color = c.color;
+    path.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      if (mode === 'setup' && hoveredHeartId >= 0) assignColor(hoveredHeartId, c.color);
+      else if (mode === 'reselect' && hoveredHeartId >= 0 && !state.opened.has(hoveredHeartId)) assignColor(hoveredHeartId, c.color);
+    });
+    g.appendChild(path);
+    // 키 숫자 레이블 (조각 중앙)
+    const midA = (a1 + a2) / 2, lr = (R + r) / 2;
+    const lx = cx + lr * Math.cos(midA), ly = cy + lr * Math.sin(midA);
+    const text = document.createElementNS(SVG_NS, 'text');
+    text.setAttribute('x', lx); text.setAttribute('y', ly + 1);
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'central');
+    text.setAttribute('fill', '#fff');
+    text.setAttribute('font-size', '12');
+    text.setAttribute('font-weight', '900');
+    text.setAttribute('stroke', 'rgba(0,0,0,0.6)');
+    text.setAttribute('stroke-width', '2.5');
+    text.setAttribute('paint-order', 'stroke');
+    text.setAttribute('pointer-events', 'none');
+    text.textContent = c.label;
+    g.appendChild(text);
+  }
+  // 12시 선
+  const line = document.createElementNS(SVG_NS, 'line');
+  line.setAttribute('x1', cx); line.setAttribute('y1', cy - R);
+  line.setAttribute('x2', cx); line.setAttribute('y2', cy - r);
+  line.setAttribute('stroke', 'rgba(255,255,255,0.5)');
+  line.setAttribute('stroke-width', '2');
+  line.setAttribute('stroke-dasharray', '3 2');
+  line.setAttribute('pointer-events', 'none');
+  g.appendChild(line);
+}
+buildPaletteSlices();
+
+// palette 영역 mouseenter/leave
+$('colorPalette').addEventListener('mouseenter', () => { cancelHidePaletteFn(); });
+$('colorPalette').addEventListener('mouseleave', () => { hidePaletteDelayFn(); });
+
+// 키보드 1~5 단축키
+document.addEventListener('keydown', (e) => {
+  if (mode !== 'setup' && mode !== 'reselect') return;
+  const keyMap = { '1': 'red', '2': 'yellow', '3': 'green', '4': 'blue', '5': 'rainbow' };
+  const color = keyMap[e.key];
+  if (!color || hoveredHeartId < 0) return;
+  if (mode === 'setup') assignColor(hoveredHeartId, color);
+  else if (mode === 'reselect' && !state.opened.has(hoveredHeartId)) assignColor(hoveredHeartId, color);
+});
+
+/* ================= Smart Gauge Input (즉시 반영 + 2초 딜레이) ================= */
+let gaugeInputBuffer = '';
+let gaugeInputTimer = 0;
+
+function resetGaugeInputTimer() {
+  clearTimeout(gaugeInputTimer);
+  const bar = $('inputTimerBar');
+  const fill = $('inputTimerFill');
+  if (bar) bar.classList.remove('active');
+  if (fill) { fill.style.transition = 'none'; fill.style.width = '0%'; }
+  gaugeInputBuffer = '';
+}
+
+function applyGaugeBuffer() {
+  if (!gaugeInputBuffer) return;
+  const val = Math.min(GAUGE_MAX, Math.max(0, parseInt(gaugeInputBuffer) || state.gauge));
+  state.gauge = val;
+  syncGauge(state.gauge);
+  render();
+  if (mode === 'play' && !state.over) { aiChoice = null; aiAnalyze(); }
+}
+
+function startGaugeInputTimer() {
+  clearTimeout(gaugeInputTimer);
+  const bar = $('inputTimerBar');
+  const fill = $('inputTimerFill');
+  if (!bar || !fill) return;
+  bar.classList.add('active');
+  // 0% → 100%로 2초간 채움
+  fill.style.transition = 'none';
+  fill.style.width = '0%';
+  void fill.offsetWidth;
+  fill.style.transition = 'width 1s linear';
+  fill.style.width = '100%';
+  gaugeInputTimer = setTimeout(() => { resetGaugeInputTimer(); }, 1000);
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.ctrlKey || e.altKey || e.metaKey) return;
+  if (mode !== 'play' || state.over) return;
+  if (!/^[0-9]$/.test(e.key)) return;
+  e.preventDefault();
+  const bar = $('inputTimerBar');
+  // 타이머 만료 후 첫 입력이면 버퍼 초기화
+  if (!bar?.classList.contains('active')) {
+    gaugeInputBuffer = '';
+  }
+  gaugeInputBuffer += e.key;
+  if (gaugeInputBuffer.length > 3) gaugeInputBuffer = gaugeInputBuffer.slice(-3);
+  // 즉시 적용
+  applyGaugeBuffer();
+  startGaugeInputTimer();
+});
 $('startGameBtn').addEventListener('click', startGame);
 $('reselectDoneBtn').addEventListener('click', reselectDone);
 
@@ -1551,6 +1942,519 @@ $('guideTurnPrev').addEventListener('click', () => renderGuideTurn(guideTurnIdx 
 $('guideTurnNext').addEventListener('click', () => renderGuideTurn(guideTurnIdx + 1));
 $('guideQaPrev').addEventListener('click', () => renderGuideQa(guideQaIdx - 1));
 $('guideQaNext').addEventListener('click', () => renderGuideQa(guideQaIdx + 1));
+
+/* ================= Screen Capture ================= */
+let captureStream = null;
+let calibPoints = []; // [{x,y} in video pixels] — 템플릿 매칭 결과로 자동 설정
+let captureResults = {}; // { id: color | null }
+let capturePreviewMode = false;
+
+async function startCapture() {
+  try {
+    captureStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+    const video = $('captureVideo');
+    video.srcObject = captureStream;
+    $('captureOverlay').classList.remove('hidden');
+    resetCaptureState();
+    $('captureTemplateBtn').disabled = templates.length === 0;
+    if (templates.length === 0) {
+      $('captureStatus').textContent = '⚠️ 템플릿 이미지가 로드되지 않았습니다. 로컬 서버(http://localhost)로 열어주세요.';
+    }
+
+    captureStream.getVideoTracks()[0].addEventListener('ended', () => {
+      $('captureOverlay').classList.add('hidden');
+      stopCapture();
+    });
+  } catch (e) {
+    if (e.name !== 'AbortError') alert('화면 캡처를 시작할 수 없습니다: ' + e.message);
+  }
+}
+
+function stopCapture() {
+  if (captureStream) {
+    captureStream.getTracks().forEach(t => t.stop());
+    captureStream = null;
+  }
+  $('captureVideo').srcObject = null;
+  $('captureApplyBtn').disabled = true;
+  $('captureTemplateBtn').disabled = true;
+}
+
+function resetCaptureState() {
+  calibPoints = [];
+  captureResults = {};
+  capturePreviewMode = false;
+  $('captureTitle').textContent = '📷 화면 캡처 — 하트 자동 인식';
+  $('captureGuideText').innerHTML = '캡처할 화면 선택 후 <b style="color:#a0d0ff">🎯 템플릿 분석</b>을 누르면 image 폴더의 하트 이미지로 자동 인식합니다<br><span style="font-size:11px">인식 후 미리보기에서 색상을 수정할 수 있어요</span>';
+  $('captureStatus').textContent = '';
+  $('captureApplyBtn').disabled = true;
+  $('captureTemplateBtn').disabled = templates.length === 0;
+  const g = $('captureCalibration');
+  if (g) g.innerHTML = '';
+}
+
+// 비디오 픽셀 좌표 → SVG 좌표(0..500,0..440)
+function videoPixelToSvgPoint(vx, vy) {
+  const svg = document.querySelector('.capture-guide');
+  const rect = svg.getBoundingClientRect();
+  const viewW = 500, viewH = 440;
+  const rectAspect = rect.width / rect.height;
+  const viewAspect = viewW / viewH;
+  let s, ox, oy;
+  if (rectAspect > viewAspect) {
+    s = rect.height / viewH;
+    ox = (rect.width - viewW * s) / 2;
+    oy = 0;
+  } else {
+    s = rect.width / viewW;
+    ox = 0;
+    oy = (rect.height - viewH * s) / 2;
+  }
+  const video = $('captureVideo');
+  const vRect = video.getBoundingClientRect();
+  const vAspect = video.videoWidth / video.videoHeight;
+  const vrAspect = vRect.width / vRect.height;
+  let vs, vox, voy;
+  if (vrAspect > vAspect) {
+    vs = vRect.height / video.videoHeight;
+    vox = (vRect.width - video.videoWidth * vs) / 2;
+    voy = 0;
+  } else {
+    vs = vRect.width / video.videoWidth;
+    vox = 0;
+    voy = (vRect.height - video.videoHeight * vs) / 2;
+  }
+  const parentX = vx * vs + vox;
+  const parentY = vy * vs + voy;
+  return {
+    x: (parentX - ox) / s,
+    y: (parentY - oy) / s,
+  };
+}
+
+// 4점 보정을 통해 12개 하트의 비디오 픽셀 좌표를 계산
+function getCalibratedHeartPoint(h) {
+  if (calibPoints.length < 4) {
+    const video = $('captureVideo');
+    return { x: Math.round(h.x / 500 * video.videoWidth), y: Math.round(h.y / 440 * video.videoHeight) };
+  }
+  const u = h.x / 500, v = h.y / 440;
+  const A = calibPoints[0], B = calibPoints[1], C = calibPoints[2], D = calibPoints[3];
+  const top = { x: A.x + u * (B.x - A.x), y: A.y + u * (B.y - A.y) };
+  const bottom = { x: D.x + u * (C.x - D.x), y: D.y + u * (C.y - D.y) };
+  return { x: top.x + v * (bottom.x - top.x), y: top.y + v * (bottom.y - top.y) };
+}
+
+function estimateTransform(matched) {
+  let sumU = 0, sumV = 0, sumX = 0, sumY = 0, n = 0;
+  for (let i = 0; i < 12; i++) {
+    if (!matched[i]) continue;
+    const u = HEART_POSITIONS[i].x / 500;
+    const v = HEART_POSITIONS[i].y / 440;
+    sumU += u; sumV += v;
+    sumX += matched[i].x; sumY += matched[i].y;
+    n++;
+  }
+  if (n < 3) return null;
+  const meanU = sumU / n, meanV = sumV / n;
+  const meanX = sumX / n, meanY = sumY / n;
+  let numX = 0, numY = 0, denU = 0, denV = 0;
+  for (let i = 0; i < 12; i++) {
+    if (!matched[i]) continue;
+    const u = HEART_POSITIONS[i].x / 500 - meanU;
+    const v = HEART_POSITIONS[i].y / 440 - meanV;
+    const x = matched[i].x - meanX;
+    const y = matched[i].y - meanY;
+    numX += u * x; numY += v * y;
+    denU += u * u; denV += v * v;
+  }
+  if (denU === 0 || denV === 0) return null;
+  const scaleX = numX / denU;
+  const scaleY = numY / denV;
+  const offsetX = meanX - scaleX * meanU;
+  const offsetY = meanY - scaleY * meanV;
+  return { scaleX, scaleY, offsetX, offsetY };
+}
+
+/* ---------- 템플릿 매칭 ---------- */
+let templates = [];
+
+async function loadImageElement(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error('img load failed: ' + src));
+    img.src = src;
+  });
+}
+
+function imgToData(img) {
+  const canvas = document.createElement('canvas');
+  canvas.width = img.width; canvas.height = img.height;
+  try {
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    return ctx.getImageData(0, 0, img.width, img.height).data;
+  } catch (e) {
+    console.warn('canvas getImageData 차단됨 (보안 정책). 로컬 서버 사용 필요:', e.message);
+    return null;
+  }
+}
+
+async function loadTemplates() {
+  const files = [
+    { file: 'image/blue.png', color: 'blue' },
+    { file: 'image/green.png', color: 'green' },
+    { file: 'image/pink.png', color: 'red' },
+    { file: 'image/rainbow.png', color: 'rainbow' },
+    { file: 'image/yello.png', color: 'yellow' },
+  ];
+  const loaded = [];
+  for (const t of files) {
+    let data = null, w = 0, h = 0;
+    // 방법1: fetch + blob URL (http://에서 안정)
+    try {
+      const resp = await fetch(t.file);
+      if (resp.ok) {
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const img = await loadImageElement(url);
+        const d = imgToData(img);
+        if (d) { data = d; w = img.width; h = img.height; }
+      }
+    } catch (e) {
+      console.warn('fetch 로드 실패, <img>로 폴백:', t.file, e.message);
+    }
+    // 방법2: <img src=...> 직접 (file://에서 안정)
+    if (!data) {
+      try {
+        const img = await loadImageElement(t.file);
+        const d = imgToData(img);
+        if (d) { data = d; w = img.width; h = img.height; }
+      } catch (e) {
+        console.warn('템플릿 로드 실패:', t.file, e.message);
+        continue;
+      }
+    }
+    if (!data) continue;
+    loaded.push({ file: t.file, color: t.color, w, h, data });
+  }
+  templates = loaded.map(prepareTemplate);
+  const overlay = $('captureOverlay');
+  if (overlay && !overlay.classList.contains('hidden')) {
+    $('captureTemplateBtn').disabled = templates.length === 0;
+    if (templates.length === 0) {
+      $('captureStatus').textContent = '⚠️ 템플릿 이미지 로드 실패. 로컬 서버(http://localhost)로 열어주세요.';
+    }
+  }
+  if (templates.length === 0) {
+    console.error('loadTemplates: 로드된 템플릿 없음. file:// 대신 로컬 서버 사용 권장.');
+  } else {
+    console.log(`loadTemplates: ${templates.length}개 템플릿 로드 완료`);
+  }
+}
+
+function prepareTemplate(template) {
+  const { w, h, data } = template;
+  const gray = new Float32Array(w * h);
+  const mask = new Uint8Array(w * h);
+  let sum = 0, sum2 = 0, n = 0;
+  let sumR = 0, sumG = 0, sumB = 0;
+  for (let i = 0; i < w * h; i++) {
+    const r = data[i * 4], g = data[i * 4 + 1], b = data[i * 4 + 2], a = data[i * 4 + 3];
+    const v = 0.299 * r + 0.587 * g + 0.114 * b;
+    gray[i] = v;
+    mask[i] = a > 128 ? 1 : 0;
+    if (mask[i]) {
+      sum += v; sum2 += v * v; n++;
+      sumR += r; sumG += g; sumB += b;
+    }
+  }
+  const mean = sum / n;
+  const std = Math.sqrt(sum2 / n - mean * mean);
+  const avgR = sumR / n, avgG = sumG / n, avgB = sumB / n;
+  return { ...template, gray, mask, mean, std, n, avgR, avgG, avgB };
+}
+
+function prepareSourceGray(data, w, h) {
+  const gray = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) {
+    gray[i] = 0.299 * data[i * 4] + 0.587 * data[i * 4 + 1] + 0.114 * data[i * 4 + 2];
+  }
+  return gray;
+}
+
+function matchTemplateNCC(prepared, sourceGray, sourceW, sourceH, step) {
+  const { w, h, gray, mask, mean, std, n, color } = prepared;
+  const results = [];
+  if (std === 0) return results;
+  for (let y = 0; y <= sourceH - h; y += step) {
+    for (let x = 0; x <= sourceW - w; x += step) {
+      let sSum = 0, sSum2 = 0, tsSum = 0, count = 0;
+      for (let ty = 0; ty < h; ty++) {
+        for (let tx = 0; tx < w; tx++) {
+          const tIdx = ty * w + tx;
+          if (!mask[tIdx]) continue;
+          const sIdx = (y + ty) * sourceW + (x + tx);
+          const sg = sourceGray[sIdx];
+          sSum += sg; sSum2 += sg * sg; tsSum += gray[tIdx] * sg;
+          count++;
+        }
+      }
+      if (count === 0) continue;
+      const sMean = sSum / count;
+      const sVar = sSum2 / count - sMean * sMean;
+      if (sVar <= 0) continue;
+      const cov = tsSum / count - mean * sMean;
+      const score = cov / (std * Math.sqrt(sVar));
+      if (score > 0.50) {
+        results.push({ x, y, w, h, score, color });
+      }
+    }
+  }
+  return results;
+}
+
+// 매칭 위치의 source 평균 RGB와 템플릿 평균 RGB 거리로 색상 검증
+function colorVerify(prepared, sourceData, sourceW, sx, sy, sw, sh) {
+  const { w, h, mask, avgR, avgG, avgB } = prepared;
+  let sR = 0, sG = 0, sB = 0, count = 0;
+  for (let ty = 0; ty < h; ty++) {
+    for (let tx = 0; tx < w; tx++) {
+      const tIdx = ty * w + tx;
+      if (!mask[tIdx]) continue;
+      const sIdx = ((sy + ty) * sw + (sx + tx)) * 4;
+      sR += sourceData[sIdx]; sG += sourceData[sIdx + 1]; sB += sourceData[sIdx + 2];
+      count++;
+    }
+  }
+  if (count === 0) return false;
+  const dr = sR / count - avgR;
+  const dg = sG / count - avgG;
+  const db = sB / count - avgB;
+  const dist = Math.sqrt(dr * dr + dg * dg + db * db);
+  return dist < 140; // 거리 임계값 (조명/압축/그라데이션 여유 포함)
+}
+
+function nonMaxSuppression(detections, overlapThreshold) {
+  detections.sort((a, b) => b.score - a.score);
+  const kept = [];
+  for (const d of detections) {
+    let overlaps = false;
+    for (const k of kept) {
+      const ix = Math.max(0, Math.min(d.x + d.w, k.x + k.w) - Math.max(d.x, k.x));
+      const iy = Math.max(0, Math.min(d.y + d.h, k.y + k.h) - Math.max(d.y, k.y));
+      const inter = ix * iy;
+      const union = d.w * d.h + k.w * k.h - inter;
+      if (inter / union > overlapThreshold) { overlaps = true; break; }
+    }
+    if (!overlaps) kept.push(d);
+  }
+  return kept;
+}
+
+function matchDetectionsToPositions(detections) {
+  if (detections.length < 3) return null;
+  const cxs = detections.map(d => d.x + d.w / 2);
+  const cys = detections.map(d => d.y + d.h / 2);
+  const xmin = Math.min(...cxs), xmax = Math.max(...cxs);
+  const ymin = Math.min(...cys), ymax = Math.max(...cys);
+  const boardW = Math.max(1, xmax - xmin), boardH = Math.max(1, ymax - ymin);
+  // HEART_POSITIONS bbox: x 55..445 (w=390), y 60..390 (h=330)
+  const hpXmin = 55, hpW = 390, hpYmin = 60, hpH = 330;
+  // 점수 내림차순 greedy 매칭
+  const sorted = [...detections].sort((a, b) => b.score - a.score);
+  const matched = new Array(12).fill(null);
+  for (const d of sorted) {
+    const cx = d.x + d.w / 2, cy = d.y + d.h / 2;
+    const u = (cx - xmin) / boardW;
+    const v = (cy - ymin) / boardH;
+    let bestId = -1, bestDist = Infinity;
+    for (let i = 0; i < 12; i++) {
+      if (matched[i]) continue;
+      const hp = HEART_POSITIONS[i];
+      const hpU = (hp.x - hpXmin) / hpW;
+      const hpV = (hp.y - hpYmin) / hpH;
+      const dist = Math.hypot(hpU - u, hpV - v);
+      if (dist < bestDist) { bestDist = dist; bestId = i; }
+    }
+    if (bestId >= 0 && bestDist < 0.28) {
+      matched[bestId] = { x: cx, y: cy, color: d.color, w: d.w, h: d.h };
+    }
+  }
+  return matched;
+}
+
+function downsampleImage(data, w, h, scale) {
+  const nw = Math.round(w * scale), nh = Math.round(h * scale);
+  const out = new Uint8ClampedArray(nw * nh * 4);
+  for (let y = 0; y < nh; y++) {
+    for (let x = 0; x < nw; x++) {
+      const sx = Math.min(w - 1, Math.round(x / scale));
+      const sy = Math.min(h - 1, Math.round(y / scale));
+      const si = (sy * w + sx) * 4;
+      const di = (y * nw + x) * 4;
+      out[di] = data[si]; out[di + 1] = data[si + 1]; out[di + 2] = data[si + 2]; out[di + 3] = data[si + 3];
+    }
+  }
+  return { data: out, w: nw, h: nh };
+}
+
+async function templateAnalyze() {
+  const video = $('captureVideo');
+  if (!video || !captureStream || templates.length === 0) return;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
+  const sourceData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+  // 0.75배 다운샘플링 (정확도/속도 균형)
+  const dsScale = 0.75;
+  const ds = downsampleImage(sourceData, canvas.width, canvas.height, dsScale);
+  const sourceGray = prepareSourceGray(ds.data, ds.w, ds.h);
+
+  // 다중 스케일 템플릿 (0.65 / 0.8 / 1.0 / 1.25 / 1.5배) — 크기 변화 대응
+  const scaleFactors = [0.65, 0.8, 1.0, 1.25, 1.5];
+  const downTemplates = [];
+  for (const t of templates) {
+    for (const sf of scaleFactors) {
+      const d = downsampleImage(t.data, t.w, t.h, dsScale * sf);
+      downTemplates.push({ ...prepareTemplate({ ...t, data: d.data, w: d.w, h: d.h }), origColor: t.color });
+    }
+  }
+
+  $('captureStatus').textContent = '🎯 템플릿 매칭 중... (3~8초 소요)';
+  await new Promise(r => setTimeoutTracked(r, 50));
+
+  const step = 2;
+  let allDetections = [];
+  for (const tmpl of downTemplates) {
+    const dets = matchTemplateNCC(tmpl, sourceGray, ds.w, ds.h, step);
+    for (const d of dets) {
+      const ox = Math.round(d.x / dsScale), oy = Math.round(d.y / dsScale);
+      const ow = Math.round(d.w / dsScale), oh = Math.round(d.h / dsScale);
+      if (colorVerify(tmpl, sourceData, canvas.width, ox, oy, ow, oh)) {
+        d.x = ox; d.y = oy; d.w = ow; d.h = oh;
+        d.color = tmpl.origColor;
+        allDetections.push(d);
+      }
+    }
+  }
+
+  const kept = nonMaxSuppression(allDetections, 0.2);
+  const matched = matchDetectionsToPositions(kept);
+  if (!matched) {
+    $('captureStatus').textContent = `⚠️ 하트를 충분히 찾지 못했습니다 (${kept.length}개 검출). 화면에 하트가 모두 보이는지 확인 후 다시 시도하세요.`;
+    return;
+  }
+
+  const tf = estimateTransform(matched);
+  if (!tf) {
+    $('captureStatus').textContent = `⚠️ 보드 위치를 추정할 검출점이 부족합니다. 다시 시도해주세요.`;
+    return;
+  }
+
+  const corners = [
+    { u: 0, v: 0 }, { u: 1, v: 0 }, { u: 1, v: 1 }, { u: 0, v: 1 }
+  ];
+  calibPoints = corners.map(({ u, v }) => ({
+    x: Math.round(tf.offsetX + tf.scaleX * u),
+    y: Math.round(tf.offsetY + tf.scaleY * v)
+  }));
+
+  captureResults = {};
+  let matchedCount = 0;
+  for (let i = 0; i < 12; i++) {
+    if (matched[i]) { captureResults[i] = matched[i].color; matchedCount++; }
+    else captureResults[i] = null;
+  }
+  capturePreviewMode = true;
+
+  $('captureTitle').textContent = '🎯 템플릿 매칭 결과 미리보기';
+  $('captureGuideText').innerHTML = '미리보기 하트를 <b style="color:#e8c97a">클릭</b>하면 색상을 순환합니다. 회색(미인식) 하트는 직접 지정하세요.';
+  $('captureStatus').textContent = `✅ ${matchedCount}/12 인식 (검출 ${kept.length}개). 부족한 하트는 직접 수정하세요.`;
+  $('captureApplyBtn').disabled = false;
+  $('captureTemplateBtn').disabled = true;
+  renderPreview();
+}
+
+function renderPreview() {
+  const g = $('captureCalibration');
+  if (!g) return;
+  g.innerHTML = '';
+  for (const h of HEART_POSITIONS) {
+    const p = getCalibratedHeartPoint(h);
+    const vP = videoPixelToSvgPoint(p.x, p.y);
+    const color = captureResults[h.id] || 'none';
+    const fill = color === 'none' ? '#555' : (color === 'rainbow' ? 'url(#captureRainbowGrad)' : COLOR_STATS[color].fill);
+    const gHeart = document.createElementNS(SVG_NS, 'g');
+    gHeart.classList.add('preview-heart');
+    if (color === 'none') gHeart.classList.add('unknown');
+    gHeart.setAttribute('data-id', h.id);
+    const path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute('d', HEART_PATH);
+    path.setAttribute('transform', `translate(${vP.x - 12}, ${vP.y - 12}) scale(1)`);
+    path.classList.add('ph-fill');
+    path.setAttribute('fill', fill);
+    gHeart.appendChild(path);
+    const t = document.createElementNS(SVG_NS, 'text');
+    t.setAttribute('x', vP.x); t.setAttribute('y', vP.y + 1);
+    t.classList.add('ph-label');
+    t.textContent = h.id;
+    gHeart.appendChild(t);
+    gHeart.addEventListener('click', (e) => {
+      e.stopPropagation();
+      cyclePreviewColor(h.id);
+    });
+    g.appendChild(gHeart);
+  }
+}
+
+function cyclePreviewColor(id) {
+  const order = ['red', 'yellow', 'green', 'blue', 'rainbow', null];
+  const current = captureResults[id];
+  const idx = order.indexOf(current);
+  const next = order[(idx + 1) % order.length];
+  captureResults[id] = next;
+  const success = Object.values(captureResults).filter(c => c).length;
+  $('captureStatus').textContent = `인식 성공: ${success}/12`;
+  renderPreview();
+}
+
+function applyCapture() {
+  let assigned = 0;
+  for (const h of HEART_POSITIONS) {
+    const color = captureResults[h.id];
+    if (color) {
+      userColorChoices[h.id] = color;
+      hearts[h.id].color = color;
+      assigned++;
+    }
+  }
+  stopCapture();
+  $('captureOverlay').classList.add('hidden');
+  drawBoard();
+  updateSetupCounter();
+  log(`📷 ${assigned}개 하트 색상 자동 입력 완료!`, 'ok');
+  if (assigned < 12) {
+    log(`⚠️ ${12 - assigned}개 하트는 인식 실패/미지정 — 직접 설정하세요`, 'effect');
+  }
+}
+
+$('captureCloseBtn').addEventListener('click', () => {
+  stopCapture();
+  $('captureOverlay').classList.add('hidden');
+});
+$('captureCancelBtn').addEventListener('click', () => {
+  stopCapture();
+  $('captureOverlay').classList.add('hidden');
+});
+$('captureTemplateBtn').addEventListener('click', templateAnalyze);
+$('captureApplyBtn').addEventListener('click', applyCapture);
+
 $('restartBtn').addEventListener('click', () => {
   initSetup();
 });
@@ -1567,11 +2471,6 @@ $('editStepBtn').addEventListener('click', () => {
 });
 $('nextStepBtn').addEventListener('click', () => {
   if (historyIdx < history.length - 1) { historyIdx++; restoreState(history[historyIdx]); }
-});
-$('toggleLabelsBtn').addEventListener('click', () => {
-  const g = $('hearts'); if (!g) return;
-  const hidden = g.classList.toggle('labels-off');
-  $('toggleLabelsBtn').textContent = hidden ? '번호 ON' : '번호 OFF';
 });
 
 // Group priority buttons (게임 중 언제든 변경 가능)
@@ -1607,6 +2506,7 @@ if (aiChoice && aiChoice.el) {}
 })();
 
 initSetup();
+loadTemplates();
 </script>
 </body>
 </html>
