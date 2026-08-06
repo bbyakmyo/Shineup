@@ -61,12 +61,22 @@
     text-shadow: 0 0 14px rgba(232,201,122,0.45); margin-bottom: 10px;
     position: relative;
   }
+  #guideOverlay {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; justify-content: center; align-items: center;
+    background: rgba(8,4,20,0.85);
+  }
+  #guideOverlay.hidden { display: none; }
   .guide-btn {
     position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-    padding: 3px 10px; font-size: 14px; font-family: inherit;
+    padding: 4px 12px; font-size: 14px;
+    font-family: Georgia,'Times New Roman','Malgun Gothic',serif;
+    font-weight: 700; letter-spacing: 0.5px;
     border: 1px solid rgba(160,124,197,0.4); border-radius: 8px;
-    cursor: pointer; color: #c9b0e8; transition: all 0.2s;
-    background: rgba(60,20,110,0.4); line-height: 1;
+    cursor: pointer; color: #e8c97a; transition: all 0.2s;
+    background: linear-gradient(135deg, rgba(60,20,110,0.55), rgba(100,40,160,0.4));
+    box-shadow: 0 0 8px rgba(160,124,197,0.25);
+    line-height: 1.1;
   }
   .guide-btn:hover { border-color: #e8c97a; color: #e8c97a; }
 
@@ -377,12 +387,12 @@
   }
 
   /* ── Guide Modal ── */
-  #guideOverlay {
+  #changelogOverlay {
     position: fixed; inset: 0; z-index: 100;
     display: flex; justify-content: center; align-items: center;
     background: rgba(8,4,20,0.85);
   }
-  #guideOverlay.hidden { display: none; }
+  #changelogOverlay.hidden { display: none; }
   .guide-modal {
     width: 92%; max-width: 540px; max-height: 88vh; overflow: hidden;
     background: linear-gradient(170deg, rgba(22,14,48,0.98), rgba(10,6,28,0.99));
@@ -789,7 +799,7 @@
       <!-- page 1: 색별 특징 -->
       <div class="guide-page active" data-page="1">
         <h3>🎨 색별 특징 (한눈에 보기)</h3>
-        <p>❤️ <b style="color:#ff5f7e">빨강</b> (65%) — 제일 안전, 실패해도 작은 피해. <b>주력 하트</b></p>
+        <p>❤️ <b style="color:#ff5f7e">빨강</b> (65%) — 제일 안전, 실패해도 작은 피해. 특수효과는 없지만 게이지 소모가 적어 <b>전부 배치 시 승률 35%</b>로 최고</p>
         <p>💛 <b style="color:#ffd93d">노랑</b> (55%) — +15 회복! 게이지 85 이하에서 <b>최고 효율</b></p>
         <p>💚 <b style="color:#6bcb77">초록</b> (50%) — 다음 +20% 버프 <i>(1턴만)</i>. 레인보우 콤보 기회 있을 때만</p>
         <p>💙 <b style="color:#63c8f2">파랑</b> (55%) — 남은 하트 색 하트 재설정으로. 빨강·노랑 다시 배치 노리기. <b>남용 금지</b> (1개만 열림)</p>
@@ -844,17 +854,17 @@
         <div class="guide-qa-list">
           <div class="guide-qa active" data-qa="0">
             <p class="guide-q">Q1. 승률이 얼마나 돼? 이길 수 있어?</p>
-            <p class="guide-a">A. 이 게임은 원래 <b>어려운 난이도</b>입니다. 30만 회 시뮬레이션 기준:<br>
-            • AI 추천 따르기: <b style="color:#90eea0">~18.6%</b><br>
-            • AI 없이 랜덤 클릭: ~10%<br>
-            • 이 가이드 따르기: ~16%<br>
-            즉, <b>5판 중 1판</b> 정도 클리어. 완벽한 전략은 없지만, 도박 타이밍을 줄이면 승률이 <b>1.8배</b> 올라갑니다.</p>
+            <p class="guide-a">A. 이 게임은 원래 <b>어려운 난이도</b>입니다. 12종 완전 랜덤 20만 회 시뮬레이션 기준 (v12.0 알고리즘):<br>
+            • AI 추천 따르기: <b style="color:#90eea0">~20.7%</b><br>
+            • 가장 높은 확률만 고르기(그리디): ~15.5%<br>
+            • AI 없이 랜덤 클릭: ~11.5%<br>
+            즉, <b>5판 중 1판</b> 정도 클리어. AI가 랜덤보다 <b>약 1.8배</b> 높은 승률.</p>
 
             <p class="guide-q">Q2. 같은 배치로 두 번 플레이하면 결과 같나?</p>
             <p class="guide-a">A. 다릅니다. 이 게임은 <b>확률 기반</b>이라 매 클릭마다 주사위를 굴려요. 같은 배치·같은 전략으로 5,000번 돌려도 승률 15~21%로 흔들립니다. 단일 결과는 운이 크지만, 평균은 전략의 진짜 가치를 보여줍니다.</p>
 
             <p class="guide-q">Q3. 게이지 100일 때 노랑 낭비 아닌가? 회복이 0인데?</p>
-            <p class="guide-a">A. 회복은 0점이지만 💛 노랑은 <b>리스크 가장 작은 1개 열기</b> 수단. 실패해도 −20~35로 양호. 시뮬레이션에서 노랑 86+ 제외 시 승률 −1.6%p 하락 확인. 낭비가 아닙니다!</p>
+            <p class="guide-a">A. 회복은 0점이지만 💛 노랑은 <b>리스크 가장 작은 1개 열기</b> 수단. 실패해도 −20~35로 양호. 시뮬레이션에서 노랑 86+ 제외 시 승률 변화 <b>거의 없음 (±0.1%p)</b> — 회복이 캡처도 "1개 안전 오픈" 가치가 있어 낭비가 아닙니다.</p>
           </div>
 
           <div class="guide-qa" data-qa="1">
@@ -862,7 +872,7 @@
             <p class="guide-a">A. 💙 파랑이 가장 점수 높음 (안전, 하트 재설정 기회). 💛 노랑도 후보. 🌈 레인보우는 1체인이라 점수 최악. <b>도박 금지, 파랑·노랑 우선</b>.</p>
 
             <p class="guide-q">Q5. 초록 연속 70% 버프 체인?</p>
-            <p class="guide-a">A. 50%라 실패 누적 큼. <b>1턴만 지속</b>, 1번 실패하면 50%로 돌아감. 무조건 초록 연속 시뮬레이션 → 승률 16.7% (AI 17.9% 대비 하락).</p>
+            <p class="guide-a">A. 버프는 <b>1턴만 지속</b>이라 연쇄 버프가 불가능. 1번 실패하면 다시 50%로 돌아감. 무조건 초록 우선 시뮬레이션 → 승률 <b>19.3%</b> (AI 20.7% 대비 약 −1.4%p 하락)으로 손해.</p>
 
             <p class="guide-q">Q6. 초록→빨강 버프 얹기?</p>
             <p class="guide-a">A. 버프 1턴이라 ❤️ 빨강 85%로 1개 열고 끝. 🌈 레인보우에 얹으면 55%로 체인 3~4개. <b>기대 하트 수는 🌈가 압도</b>.</p>
@@ -870,24 +880,27 @@
 
           <div class="guide-qa" data-qa="2">
             <p class="guide-q">Q7. 파랑 하트 재설정으로 노랑 노리기?</p>
-            <p class="guide-a">A. 기대값 음수. 💙 파랑은 성공해도 1개, 하트 재설정으로는 무작위라 💛 노랑 나올 확률 20%. 시뮬레이션: AI 19.9% vs 파랑우선 16.2%.</p>
+            <p class="guide-a">A. 기대값 크게 음수. 💙 파랑은 성공해도 1개, 하트 재설정으로는 무작위라 💛 노랑 나올 확률 20%. "무조건 파랑 우선" 전략 승률 <b>9.0%</b> vs AI <b>20.7%</b> (−11.7%p 대폭 하락) — 파랑 남용 매우 위험. <b>연속 파랑 2회부터는 AI가 자동으로 보너스를 점진 감소</b>(0.7→0.5→0.3→0)시켜 과도한 남용을 방지합니다.</p>
 
             <p class="guide-q">Q8. 빨강·노랑·파랑 다 소진? 초록 버프 쓸 데 없으면?</p>
             <p class="guide-a">A. 💚 초록 버프를 써도 받을 ❤️💙이 없다면, 남은 💚 초록 자신이나 🌈 레인보우에 얹는 것 외엔 방법 없음. 💚도 소진 → 어쩔 수 없이 🌈 레인보우 도박 (후반 강제 상황).</p>
 
             <p class="guide-q">Q9. AI는 대체 🌈 레인보우를 언제 고르나?</p>
-            <p class="guide-a">A. 50만 판 분석 결과, 레인보우가 1위 추천된 케이스의 <b>76%가 9~11개 오픈 후 마지막 하트</b>인 후반 강제 상황. <b>3체인 이상 자발적 도박은 0건</b>. AI는 "좋아서"가 아니라 "어쩔 수 없이" 고릅니다.</p>
+            <p class="guide-a">A. 20만 판 분석 결과, 레인보우가 1위 추천된 케이스의 <b>87%가 강제 상황</b> (9~11개 오픈 후 남은 하트가 레인보우뿐인 후반). 체인 3+ 자발적 도박은 5천 건 정도로 소수. AI는 "좋아서"보다는 "어쩔 수 없이" 고르는 비중이 압도적.</p>
           </div>
 
           <div class="guide-qa" data-qa="3">
             <p class="guide-q">Q10. 전부 ❤️ 빨강으로 배치하면 가장 안전 아닌가?</p>
-            <p class="guide-a">A. 65%라 단일 성공률은 최고지만, <b>체인도·회복도·버프도 없어</b> 매 클릭이 고립됩니다. 12개 다 시도 시 실패 35%가 누적되어 게이지 먼저 소진. 시뮬레이션에서 "전부 빨강" 배치는 승률 10% 수준으로, 랜덤보다도 낮습니다. <b>가장 안전한 하트만 고른 배치가 가장 안 좋은 결과</b>를 냅니다.</p>
+            <p class="guide-a">A. 65%라 안전하긴 하지만 <b>체인도·회복도·버프도 없어</b> 매 클릭이 고립됩니다. 그러나 실패 피해(15~25)가 가장 작아 게이지 소모가 느려, 시뮬레이션에선 "전부 빨강" 승률 <b>35%</b>로 5종 랜덤(11.5%)보다 오히려 <b>3배 높습니다</b> — 가장 안전한 하트만 배치하면 실제로 가장 좋은 결과가 나옵니다.</p>
 
             <p class="guide-q">Q11. 빨강·노랑 회복 다 썼는데 게이지 40 남았어. 어떡해?</p>
-            <p class="guide-a">A. 남은 색이 💙 파랑·💚 초록·🌈 레인보우뿐이면 <b>파랑 우선</b>. 파랑은 실패해도 −20~35로 레인보우(−35~50)보다 작고, 성공 시 하트 재설정으로 ❤️💛 다시 배치 기회. 초록·레인보우는 게이지 40에서 도박 → 실패 시 즉시 게임 오버 위험.</p>
+            <p class="guide-a">A. 남은 색이 💙 파랑·💚 초록·🌈 레인보우뿐이면 <b>AI 추천을 따르세요</b>. 단순 "파랑 우선" 고정 전략은 승률 8.6%로 AI 18.5%보다 크게 낮음 — 파랑 실패 리스크, 남은 체인 상황 등을 종합 판단해야 해서 AI에게 맡기는 게 안전.</p>
 
             <p class="guide-q">Q12. 왜 AI 추천이 내 직감이랑 다를 때가 있지?</p>
-            <p class="guide-a">A. AI는 게이지·체인 크기·남은 색 분포·실패 리스크를 <b>숫자로 종합 평가</b>합니다. 사람은 "레인보우가 좋아 보여"라 직감으로 가지만, AI는 "기대 피해 32.5 vs 빨강 7"처럼 정량 비교해 더 안전한 쪽을 고릅니다. 직감이 틀릴 때가 많고, 시뮬레이션 30만 회에서 AI가 사람 전략보다 <b>1.8배 승률↑</b> 확인했습니다.</p>
+            <p class="guide-a">A. AI는 게이지·체인 크기·남은 색 분포·실패 리스크를 <b>숫자로 종합 평가</b>합니다. 사람은 "레인보우가 좋아 보여"라 직감으로 가지만, AI는 "기대 피해 32.5 vs 빨강 7"처럼 정량 비교해 더 안전한 쪽을 고릅니다. 직감이 틀릴 때가 많고, 시뮬레이션 20만 회에서 AI가 랜덤 클릭보다 <b>약 1.8배 승률↑</b> 확인했습니다.</p>
+
+            <p class="guide-q">Q13. 한 판에 샤드는 얼마나 받아?</p>
+            <p class="guide-a">A. 시뮬레이션(12종 완전 랜덤, v12.0 AI): 승률 <b>20.7%</b>(승리 시 22개), 나머지는 1~12개. <b>한 판당 평균 8.9개</b> 샤드 수급.</p>
           </div>
         </div>
         <div class="guide-qa-nav">
@@ -902,6 +915,36 @@
       <button id="guidePrevBtn">◀ 이전</button>
       <span id="guidePageNum">1 / 5</span>
       <button id="guideNextBtn">다음 ▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Changelog Overlay ── -->
+<div id="changelogOverlay" class="hidden">
+  <div class="guide-modal" style="max-width:500px">
+    <div class="guide-header">
+      <span class="guide-title">📋 변경사항</span>
+      <button class="guide-close" id="changelogCloseBtn">×</button>
+    </div>
+    <div class="guide-body" id="changelogBody">
+      <table class="guide-table">
+        <tr><th>버전</th><th>변경 내용</th></tr>
+        <tr><td>v1</td><td>초기 틀: 12하트, 그룹, 시각선</td></tr>
+        <tr><td>v2</td><td>하트 위치 재배치 + ID 마킹</td></tr>
+        <tr><td>v3</td><td>0~11 번호 라벨 + ON/OFF 토글</td></tr>
+        <tr><td>v4</td><td>사이클 기반 그룹 재정의 + CHAIN_MAP</td></tr>
+        <tr><td>v5</td><td>파랑 특수효과: 모든 하트 색상 무작위 변경</td></tr>
+        <tr><td>v6</td><td>마법학교 테마 + 안정성 보강 + 최적 전략 분석</td></tr>
+        <tr><td>v7</td><td>파랑 성공 시 열리도록 수정 + 그룹 진행도 라벨</td></tr>
+        <tr><td>v8</td><td>AI 플레이 시스템: 추천·실행·게이지 슬라이더</td></tr>
+        <tr><td>v9</td><td>레인보우 체인 VISUAL_EDGES 기반 동적 생성</td></tr>
+        <tr><td>v10</td><td>7개 전략 알고리즘 비교 실험</td></tr>
+        <tr><td>v11</td><td>화면 캡처 + 템플릿 매칭 자동 하트 인식 (image 폴더)</td></tr>
+        <tr><td>v12</td><td>원형 파이 팔레트 (하트 hover) + 키보드 1~5 단축키</td></tr>
+        <tr><td>v13</td><td>스마트 게이지 숫자 입력 (즉시 반영 + 1초 딜레이)</td></tr>
+        <tr><td>v14</td><td>보드 위 게이지 컨트롤 + 레인지 슬라이더</td></tr>
+        <tr><td>v15</td><td>UI 개편: setup-bar 중앙정렬, 리셋바 분리, 공략/변경사항 버튼</td></tr>
+      </table>
     </div>
   </div>
 </div>
@@ -1132,7 +1175,7 @@ function startGame() {
   mode = 'play'; aiChoice = null;
 
   hearts = HEART_POSITIONS.map(h => ({ ...h, color: userColorChoices[h.id] }));
-  state = { gauge: GAUGE_MAX, opened: new Set(), buff: 0, attempts: 0, over: false };
+  state = { gauge: GAUGE_MAX, opened: new Set(), buff: 0, attempts: 0, over: false, consecBlue: 0 };
   history = [captureState()]; historyIdx = 0;
 
   $('setupBar').classList.add('hidden');
@@ -1158,7 +1201,7 @@ function startGame() {
 function resetPlay() {
   clearAllTimers(); lastClickTime = 0; aiChoice = null;
   hearts = HEART_POSITIONS.map(h => ({ ...h, color: userColorChoices[h.id] }));
-  state = { gauge: GAUGE_MAX, opened: new Set(), buff: 0, attempts: 0, over: false };
+  state = { gauge: GAUGE_MAX, opened: new Set(), buff: 0, attempts: 0, over: false, consecBlue: 0 };
 
   $('overlay').classList.add('hidden');
   $('groupBar').classList.remove('hidden');
@@ -1355,6 +1398,7 @@ function onHeartClick(h) {
   if (!h||!h.el) return;
 
   state.attempts++; state.buff = 0;
+  if (h.color === 'blue') state.consecBlue = (state.consecBlue || 0) + 1; else state.consecBlue = 0;
 
   // Always succeed
   succeed(h);
@@ -1501,12 +1545,13 @@ function aiAnalyze() {
       // 게이지가 낮을수록 +15 회복이 생존(전체 완성) 가치↑
       // 2차 곡선 + 계수 강화: 저체력에서 노랑이 안전 하트를 역전하도록
       // v11.4: 회복 효율 반영 (게이지 85 이하에서 효율 100%, 86+에서 캡 낭비 감소)
+      // v12.0: 노랑 보너스 튜닝 — 2차 곡선→1차 곡선, 배수 2.2→4, 저체력 가산 6→12 (50만 회×3 검증)
       const healEff = Math.min(1, (GAUGE_MAX - state.gauge) / YELLOW_HEAL);
-      bonus = 15 * Math.pow(Math.max(0, 1 - gaugeRatio), 2) * 2.2 * prob * healEff;
+      bonus = 15 * Math.pow(Math.max(0, 1 - gaugeRatio), 1) * 4 * prob * healEff;
       // 게이지 30% 미만: 생존 우선 추가 가산
       if (gaugeRatio < 0.30) bonus += 4 * prob;
-      // 게이지 90% 미만: 저체력 추가 가산 (시뮬레이션 검증 +6점, 임계값 90%)
-      if (gaugeRatio < 0.90) bonus += 6 * prob;
+      // 게이지 90% 미만: 저체력 추가 가산 (시뮬레이션 검증 +12점으로 상향)
+      if (gaugeRatio < 0.90) bonus += 12 * prob;
       special = `게이지 +15 회복 (≈+${bonus.toFixed(1)}점 가치)`;
     } else if (h.color === 'green') {
       special = '다음 성공률 +20% 버프';
@@ -1515,7 +1560,13 @@ function aiAnalyze() {
       const remaining = others.length;
       const lowValue = others.filter(c => c.color === 'red' || c.color === 'blue').length;
       bonus = remaining * 0.3 + lowValue * 0.5;
-      special = `하트 재설정으로 (남은 ${remaining}개·저가치 ${lowValue}개 ≈+${bonus.toFixed(1)}점)`;
+      // v12.1: 연속 파랑 보너스 점진 감소 (1/1/0.7/0.5/0.3/0) — 20만 회 검증 +0.25pP
+      const consec = state.consecBlue || 0;
+      const penArr = [1, 1, 0.7, 0.5, 0.3, 0];
+      const penIdx = Math.min(consec, penArr.length - 1);
+      bonus *= penArr[penIdx];
+      const penNote = consec >= 2 ? ` · 연속 파랑 ${consec}회 → 보너스 ${(penArr[penIdx]*100).toFixed(0)}%` : '';
+      special = `하트 재설정으로 (남은 ${remaining}개·저가치 ${lowValue}개 ≈+${bonus.toFixed(1)}점${penNote})`;
     }
 
     // 초록 콤보 보너스: 미개봉 레인보우 있을 때 버프 → 레인보우 콤보 가치
