@@ -854,8 +854,8 @@
         <div class="guide-qa-list">
           <div class="guide-qa active" data-qa="0">
             <p class="guide-q">Q1. 승률이 얼마나 돼? 이길 수 있어?</p>
-            <p class="guide-a">A. 이 게임은 원래 <b>어려운 난이도</b>입니다. 12종 완전 랜덤 20만 회 시뮬레이션 기준 (v12.0 알고리즘):<br>
-            • AI 추천 따르기: <b style="color:#90eea0">~20.7%</b><br>
+            <p class="guide-a">A. 이 게임은 원래 <b>어려운 난이도</b>입니다. 12종 완전 랜덤 50만 회 시뮬레이션 기준 (v12.2 알고리즘):<br>
+            • AI 추천 따르기: <b style="color:#90eea0">~20.9%</b><br>
             • 가장 높은 확률만 고르기(그리디): ~15.5%<br>
             • AI 없이 랜덤 클릭: ~11.5%<br>
             즉, <b>5판 중 1판</b> 정도 클리어. AI가 랜덤보다 <b>약 1.8배</b> 높은 승률.</p>
@@ -900,7 +900,7 @@
             <p class="guide-a">A. AI는 게이지·체인 크기·남은 색 분포·실패 리스크를 <b>숫자로 종합 평가</b>합니다. 사람은 "레인보우가 좋아 보여"라 직감으로 가지만, AI는 "기대 피해 32.5 vs 빨강 7"처럼 정량 비교해 더 안전한 쪽을 고릅니다. 직감이 틀릴 때가 많고, 시뮬레이션 20만 회에서 AI가 랜덤 클릭보다 <b>약 1.8배 승률↑</b> 확인했습니다.</p>
 
             <p class="guide-q">Q13. 한 판에 샤드는 얼마나 받아?</p>
-            <p class="guide-a">A. 시뮬레이션(12종 완전 랜덤, v12.0 AI): 승률 <b>20.7%</b>(승리 시 22개), 나머지는 1~12개. <b>한 판당 평균 8.9개</b> 샤드 수급.</p>
+            <p class="guide-a">A. 시뮬레이션(12종 완전 랜덤, v12.2 AI): 승률 <b>20.9%</b>(승리 시 22개), 나머지는 1~12개. <b>한 판당 평균 9.0개</b> 샤드 수급.</p>
           </div>
         </div>
         <div class="guide-qa-nav">
@@ -1558,7 +1558,9 @@ function aiAnalyze() {
     } else if (h.color === 'blue') {
       const others = candidates.filter(c => c.id !== h.id);
       const remaining = others.length;
-      const lowValue = others.filter(c => c.color === 'red' || c.color === 'blue').length;
+      // v12.2: lowValue에서 빨강 제외 — 빨강이 남아있을 때 reselect 가치 과대평가 방지
+      // (빨강은 안전 하트라 reselect 필요 없음. 파랑 자신만 lowValue)
+      const lowValue = others.filter(c => c.color === 'blue').length;
       bonus = remaining * 0.3 + lowValue * 0.5;
       // v12.1: 연속 파랑 보너스 점진 감소 (1/1/0.7/0.5/0.3/0) — 20만 회 검증 +0.25pP
       const consec = state.consecBlue || 0;
