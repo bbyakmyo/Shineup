@@ -2810,6 +2810,10 @@ punchAudio.volume = 0.5;
 function playPunch() {
   try { punchAudio.currentTime = 0; punchAudio.play(); } catch(e) {}
 }
+// 고양이 손 이미지 미리 로딩
+const preloadHands = [new Image(), new Image()];
+preloadHands[0].src = 'asset/cat_hand_01_small.png';
+preloadHands[1].src = 'asset/cat_hand_02_small.png';
 
 $('easterPopup').addEventListener('click', (e) => {
   if (e.target === $('easterPopup')) $('easterPopup').classList.remove('active');
