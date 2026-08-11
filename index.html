@@ -286,6 +286,34 @@
   .gauge-row {
     display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;
   }
+
+  /* ── Auto Mode Toggle (보드 위 우측) ── */
+  .auto-toggle {
+    position: absolute; top: 6px; left: 8px; z-index: 6;
+    display: flex; align-items: center;
+    width: 62px; height: 28px; border-radius: 15px; padding: 0 8px;
+    border: 1.5px solid rgba(160,124,197,0.45);
+    background: rgba(0,0,0,0.5); color: #706090;
+    font-size: 11px; font-weight: 800; cursor: pointer;
+    font-family: 'Nanum Gothic','Malgun Gothic',sans-serif;
+    transition: all 0.3s; overflow: hidden; white-space: nowrap;
+  }
+  .auto-toggle::after {
+    content:''; position: absolute; top: 2px; left: 3px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #8070a0; transition: all 0.3s;
+  }
+  .auto-toggle .toggle-text { position: relative; z-index: 1; margin-left: auto; }
+  .auto-toggle:hover { border-color: #c9a0dc; }
+  .auto-toggle.active {
+    border-color: #ffd700; background: rgba(40,30,0,0.45);
+    box-shadow: 0 0 12px rgba(255,215,0,0.3);
+    color: #ffd700;
+  }
+  .auto-toggle.active::after {
+    left: 35px; background: #ffd700;
+    box-shadow: 0 0 8px rgba(255,215,0,0.5);
+  }
   .gauge-adj {
     padding: 6px 10px; font-size: 13px; font-weight: bold;
     border: 1.5px solid rgba(160,124,197,0.4); border-radius: 8px;
@@ -393,6 +421,30 @@
     background: rgba(8,4,20,0.85);
   }
   #changelogOverlay.hidden { display: none; }
+
+  /* ── Easter Egg ── */
+  #easterPopup {
+    position: fixed; inset: 0; z-index: 200; display: none;
+    justify-content: center; align-items: center;
+    background: rgba(8,4,20,0.85);
+  }
+  #easterPopup.active { display: flex; }
+  #easterImg {
+    width: 200px; height: 200px; cursor: pointer; border-radius: 16px;
+    box-shadow: 0 0 30px rgba(255,215,0,0.4);
+    transition: transform 0.2s;
+  }
+  #easterImg:hover { transform: scale(1.08); }
+  .flying-cat {
+    position: fixed; z-index: 250; pointer-events: none;
+    transition: transform 0.12s ease, left 0.12s linear, top 0.12s linear;
+  }
+  @keyframes punchShake {
+    0%,100% { transform: translateX(0) translateY(0) rotate(0); }
+    25% { transform: translateX(15px) translateY(-5px) rotate(5deg); }
+    75% { transform: translateX(-15px) translateY(5px) rotate(-5deg); }
+  }
+  .punch-shake { animation: punchShake 0.3s ease; }
   .guide-modal {
     width: 92%; max-width: 540px; max-height: 88vh; overflow: hidden;
     background: linear-gradient(170deg, rgba(22,14,48,0.98), rgba(10,6,28,0.99));
@@ -716,6 +768,7 @@
       <button class="gauge-adj" data-delta="10">+10</button>
     </div>
   </div>
+    <button class="auto-toggle hidden" id="autoModeBtn" title="자동 입력 모드"><span class="toggle-text">수동</span></button>
     <svg id="board" viewBox="0 0 500 440">
       <defs>
         <linearGradient id="rainbowGrad" x1="0" y1="0" x2="1" y2="1">
@@ -723,10 +776,57 @@
           <stop offset="50%" stop-color="#5ad87a"/><stop offset="75%" stop-color="#4a90ff"/>
           <stop offset="100%" stop-color="#b878ff"/>
         </linearGradient>
+        <marker id="arrowHead" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="8" markerHeight="5" orient="auto">
+          <path d="M0,0 L10,3 L0,6 Z" fill="#ffd700"/>
+        </marker>
+        <linearGradient id="arrowGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ffd700" stop-opacity="0.15"/>
+          <stop offset="100%" stop-color="#ffd700" stop-opacity="0.5"/>
+        </linearGradient>
       </defs>
       <g id="edges"></g>
       <g id="group-labels"></g>
       <g id="hearts"></g>
+      <g id="auto-arrows" style="display:none;pointer-events:none">
+        <style>
+          @keyframes arrowGlow { 0%,100%{opacity:0.6} 50%{opacity:1} }
+          #auto-arrows image { animation: arrowGlow 1.5s ease-in-out infinite; }
+        </style>
+        <!-- ★ 각 화살표 위치/각도 조절 ★
+             x,y     = 이미지 좌상단 (왼쪽/위로 갈수록 값↓)
+             rotate  = 각도(deg) (시계방향=+, 반시계=-)
+             첫번째 인자: 각도 / 두세번째 인자: 회전중심(x,y) -->
+
+        <!-- 0→2 (상단중앙 → 우상단) -->
+        <image href="asset/arrow.png" x="428" y="70"  width="64" height="44"
+          transform="rotate(63, 410, 98)" opacity="0.85"
+          style="filter:drop-shadow(0 0 4px rgba(255,215,0,0.5))"/>
+
+        <!-- 9→11 (우하단 → 하단) -->
+        <image href="asset/arrow.png" x="363" y="403" width="64" height="44"
+          transform="rotate(175, 325, 415)" opacity="0.85"
+          style="filter:drop-shadow(0 0 4px rgba(255,215,0,0.5))"/>
+
+        <!-- 3→1 (좌중단 → 좌상단) -->
+        <image href="asset/arrow.png" x="0"  y="60"  width="64" height="44"
+          transform="rotate(-60, 100, 80)" opacity="0.85"
+          style="filter:drop-shadow(0 0 4px rgba(255,215,0,0.5))"/>
+
+        <!-- 4→7 (중앙 → 우중하) -->
+        <image href="asset/arrow.png" x="238" y="200" width="64" height="44"
+          transform="rotate(50, 310, 265)" opacity="0.85"
+          style="filter:drop-shadow(0 0 4px rgba(255,215,0,0.5)); animation-delay:0.6s"/>
+
+        <!-- 7→6 (우중하 → 좌중하) -->
+        <image href="asset/arrow.png" x="85" y="203" width="64" height="44"
+          transform="rotate(180, 185, 265)" opacity="0.85"
+          style="filter:drop-shadow(0 0 4px rgba(255,215,0,0.5)); animation-delay:0.9s"/>
+
+        <!-- 6→4 (좌중하 → 중앙) -->
+        <image href="asset/arrow.png" x="160" y="150" width="64" height="44"
+          transform="rotate(-50, 235, 190)" opacity="0.85"
+          style="filter:drop-shadow(0 0 4px rgba(255,215,0,0.5)); animation-delay:1.2s"/>
+      </g>
     </svg>
     <div id="overlay" class="hidden">
       <div id="overlayTitle"></div>
@@ -787,6 +887,11 @@
 </div>
 
 <div class="footer">Shineup_helper powered by 백묘</div>
+
+<!-- Easter Egg -->
+<div id="easterPopup">
+  <img id="easterImg" src="asset/Jeajun.png" alt="">
+</div>
 
 <div id="guideOverlay" class="hidden">
   <div class="guide-modal">
@@ -1046,6 +1151,9 @@ let userColorChoices = {};   // { id: 'red'|'blue'|... }
 let aiChoice = null;
 let history = [];            // undo/redo snapshots
 let historyIdx = -1;
+let autoMode = false;        // 자동 입력 모드
+let autoIndex = 0;           // 현재 자동 입력 순서 인덱스
+const AUTO_SEQUENCE = [0,2,5,9,11,10,8,3,1,4,7,6];
 
 function syncGauge(val) {
   $('gaugeInput').value = val;
@@ -1083,12 +1191,16 @@ function restoreState(snap) {
     if (mode === 'reselect') {
       $('board').classList.add('reselect-mode');
       $('reselectBar').classList.remove('hidden');
+      $('autoModeBtn').classList.remove('hidden');
       $('aiPanel').classList.add('hidden');
       $('gaugeCtrl').classList.add('hidden');
     } else {
       $('board').classList.remove('reselect-mode');
-      $('reselectBar').classList.add('hidden');
-      $('gameCtrl').classList.remove('hidden'); $('resetBar').classList.remove('hidden');
+$('reselectBar').classList.add('hidden');
+  $('autoModeBtn').classList.add('hidden');
+  cancelHidePaletteFn();
+  $('colorPalette').classList.remove('visible');
+  $('gameCtrl').classList.remove('hidden'); $('resetBar').classList.remove('hidden');
       $('aiPanel').classList.remove('hidden');
       $('gaugeCtrl').classList.remove('hidden');
     }
@@ -1112,10 +1224,15 @@ function initSetup() {
   history = []; historyIdx = -1;
   resetGaugeInputTimer();
   hearts = HEART_POSITIONS.map(h => ({ ...h, color: 'none' }));
+  autoMode = false; autoIndex = 0;
+  $('autoModeBtn').classList.remove('active');
+  $('autoModeBtn').querySelector('.toggle-text').textContent = '수동';
+  $('auto-arrows').style.display = 'none';
   userColorChoices = {};
   hearts.forEach(h => { userColorChoices[h.id] = 'none'; });
 
   $('setupBar').classList.remove('hidden');
+  $('autoModeBtn').classList.remove('hidden');
   $('reselectBar').classList.add('hidden');
   $('gameCtrl').classList.add('hidden'); $('resetBar').classList.add('hidden');
   $('aiPanel').classList.add('hidden');
@@ -1153,7 +1270,10 @@ function assignColor(heartId, color) {
       path.style.color = COLOR_STATS[color].fill;
     }
   }
-  if (mode === 'setup') updateSetupCounter();
+  if (mode === 'setup') {
+    updateSetupCounter();
+  }
+  if (autoMode) { autoIndex++; advanceAutoMode(); }
 }
 
 function randomSetup() {
@@ -1179,6 +1299,10 @@ function startGame() {
   history = [captureState()]; historyIdx = 0;
 
   $('setupBar').classList.add('hidden');
+  $('autoModeBtn').classList.add('hidden');
+  $('auto-arrows').style.display = 'none';
+  cancelHidePaletteFn();
+  $('colorPalette').classList.remove('visible');
   $('reselectBar').classList.add('hidden');
   $('gameCtrl').classList.remove('hidden'); $('resetBar').classList.remove('hidden');
   $('board').classList.remove('setup-mode');
@@ -1222,6 +1346,7 @@ function cancelHidePaletteFn() { clearTimeout(paletteHideTimer); }
 function hidePaletteDelayFn() {
   clearTimeout(paletteHideTimer);
   paletteHideTimer = setTimeout(() => {
+    if (autoMode) return; // 자동모드면 절대 숨기지 않음
     const p = $('colorPalette');
     if (!p || !p.classList.contains('visible')) return;
     p.classList.remove('visible');
@@ -1229,22 +1354,19 @@ function hidePaletteDelayFn() {
   }, 200);
 }
 /* ================= [PALETTE] ================= */
-// ★★★ 팔레트 위치 계산 ★★★
-// 하트 중심(h.x, h.y) — SVG viewBox(500x440) 좌표 → SVG createSVGPoint + getScreenCTM()으로
-// 뷰포트 정확한 절대좌표로 변환. offset -65는 팔레트 크기(130px)의 절반.
+// ★★★ 팔레트 위치 ★★★
+// X_OFF, Y_OFF 를 조절해서 하트 중심에 맞추세요 (값을 늘리면 ↙ 왼쪽/위로 이동)
+const X_OFF = 59.5, Y_OFF = 62; // 팔레트 130px 기준 (기본=65, 하트 path 보정 +3)
 function showHeartPalette(h) {
   cancelHidePaletteFn();
   hoveredHeartId = h.id;
   const palette = $('colorPalette');
   if (!palette) return;
-  const keyEl = $('paletteKey');
-  if (keyEl) keyEl.textContent = h.id;
   const boardEl = $('board');
-  const pt = boardEl.createSVGPoint();
-  pt.x = h.x; pt.y = h.y;
-  const screenPt = pt.matrixTransform(boardEl.getScreenCTM());
-  palette.style.left = (screenPt.x - 60) + 'px';  // ← 팔레트 X 오프셋 (130px / 2)
-  palette.style.top  = (screenPt.y - 60) + 'px';  // ← 팔레트 Y 오프셋 (130px / 2)
+  const rect = boardEl.getBoundingClientRect();
+  const sx = rect.width / 500, sy = rect.height / 440;
+  palette.style.left = (rect.left + h.x * sx - X_OFF) + 'px';
+  palette.style.top  = (rect.top  + h.y * sy - Y_OFF) + 'px';
   palette.classList.add('visible');
 }
 /* ================= [/PALETTE] ================= */
@@ -1458,23 +1580,28 @@ function enterReselect() {
   $('board').classList.add('reselect-mode');
   $('board').classList.remove('setup-mode');
   $('reselectBar').classList.remove('hidden');
+  $('autoModeBtn').classList.remove('hidden');
   $('aiPanel').classList.add('hidden');
   $('gaugeCtrl').classList.add('hidden');
   render();
-  log('→ 파랑 성공! 남은 하트의 색상을 선택하세요.', 'effect');
+  if (autoMode) { autoIndex = 0; $('auto-arrows').style.display = ''; setTimeout(() => advanceAutoMode(), 50); }
 }
 
 function reselectDone() {
   mode = 'play';
   $('board').classList.remove('reselect-mode');
   $('reselectBar').classList.add('hidden');
+  $('autoModeBtn').classList.add('hidden');
+  $('auto-arrows').style.display = 'none';
+  cancelHidePaletteFn();
+  $('colorPalette').classList.remove('visible');
   $('gameCtrl').classList.remove('hidden'); $('resetBar').classList.remove('hidden');
   $('aiPanel').classList.remove('hidden');
   $('gaugeCtrl').classList.remove('hidden');
   syncGauge(state.gauge);
   render();
   if (!state.over) {
-aiChoice = null;
+    aiChoice = null;
     aiAnalyze();
   }
 
@@ -1787,8 +1914,11 @@ buildPaletteSlices();
 $('colorPalette').addEventListener('mouseenter', () => { cancelHidePaletteFn(); });
 $('colorPalette').addEventListener('mouseleave', () => { hidePaletteDelayFn(); });
 
-// 키보드 1~5 단축키
+// 키보드 1~5 단축키 (spacebar 차단)
 document.addEventListener('keydown', (e) => {
+  if (e.key === ' ' && (mode === 'setup' || mode === 'reselect' || mode === 'play')) {
+    e.preventDefault();
+  }
   if (mode !== 'setup' && mode !== 'reselect') return;
   const keyMap = { '1': 'red', '2': 'yellow', '3': 'green', '4': 'blue', '5': 'rainbow' };
   const color = keyMap[e.key];
@@ -1835,6 +1965,7 @@ function startGaugeInputTimer() {
 }
 
 document.addEventListener('keydown', (e) => {
+  if (e.key === ' ' && mode === 'play' && !state.over) { e.preventDefault(); }
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.ctrlKey || e.altKey || e.metaKey) return;
   if (mode !== 'play' || state.over) return;
   if (!/^[0-9]$/.test(e.key)) return;
@@ -1852,6 +1983,30 @@ document.addEventListener('keydown', (e) => {
 });
 $('startGameBtn').addEventListener('click', startGame);
 $('reselectDoneBtn').addEventListener('click', reselectDone);
+$('autoModeBtn').addEventListener('click', () => {
+  autoMode = !autoMode;
+  $('autoModeBtn').classList.toggle('active', autoMode);
+  $('autoModeBtn').querySelector('.toggle-text').textContent = autoMode ? '자동' : '수동';
+  $('auto-arrows').style.display = autoMode ? '' : 'none';
+  if (autoMode) { autoIndex = 0; advanceAutoMode(); }
+  else { cancelHidePaletteFn(); $('colorPalette').classList.remove('visible'); }
+});
+
+/* ================= Auto Input Mode ================= */
+function advanceAutoMode() {
+  if (!autoMode || (mode !== 'setup' && mode !== 'reselect')) return;
+  while (autoIndex < 12) {
+    const id = AUTO_SEQUENCE[autoIndex];
+    // reselect: 열린 하트만 건너뛰기 (색상 재설정은 모두 허용)
+    // setup: 이미 색상 있는 하트 건너뛰기
+    const skip = mode === 'reselect'
+      ? state.opened.has(id)
+      : (userColorChoices[id] !== 'none');
+    if (!skip) { showHeartPalette(hearts[id]); return; }
+    autoIndex++;
+  }
+  // 모두 완료 — 자동 모드는 그대로 유지
+}
 
 /* ================= Guide Modal ================= */
 const guidePages = document.querySelectorAll('#guideOverlay .guide-page');
@@ -2156,11 +2311,11 @@ function imgToData(img) {
 
 async function loadTemplates() {
   const files = [
-    { file: 'image/blue.png', color: 'blue' },
-    { file: 'image/green.png', color: 'green' },
-    { file: 'image/pink.png', color: 'red' },
-    { file: 'image/rainbow.png', color: 'rainbow' },
-    { file: 'image/yello.png', color: 'yellow' },
+    { file: 'asset/blue.png', color: 'blue' },
+    { file: 'asset/green.png', color: 'green' },
+    { file: 'asset/pink.png', color: 'red' },
+    { file: 'asset/rainbow.png', color: 'rainbow' },
+    { file: 'asset/yello.png', color: 'yellow' },
   ];
   const loaded = [];
   for (const t of files) {
@@ -2557,6 +2712,101 @@ if (aiChoice && aiChoice.el) {}
     c.appendChild(s);
   }
 })();
+
+/* ================= Easter Egg (스페이스바 5번) ================= */
+let spaceCount = 0; let spaceTimer = 0;
+document.addEventListener('keydown', (e) => {
+  if (e.key !== ' ') return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  spaceCount++;
+  clearTimeout(spaceTimer);
+  spaceTimer = setTimeout(() => { spaceCount = 0; }, 2000);
+  if (spaceCount >= 5) {
+    spaceCount = 0;
+    $('easterPopup').classList.add('active');
+    e.preventDefault();
+  }
+});
+
+$('easterImg').addEventListener('click', () => {
+  const img = $('easterImg');
+  const handFile = Math.random() < 0.5 ? 'asset/cat_hand_01_small.png' : 'asset/cat_hand_02_small.png';
+  const hand = document.createElement('img');
+  hand.src = handFile;
+  hand.className = 'flying-cat';
+  hand.style.width = '100px';
+  const side = Math.random() < 0.5;
+  const startX = side ? -120 : window.innerWidth + 120;
+  const startY = Math.random() * (window.innerHeight - 250) + 100;
+  const rect = img.getBoundingClientRect();
+  const targetX = rect.left + rect.width / 2 - 50;
+  const targetY = rect.top + rect.height / 2 - 160;
+  const dx = targetX - startX, dy = targetY - startY;
+  const angle = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+  hand.style.transform = 'scale(0.5) rotate(' + angle + 'deg)';
+  hand.style.left = startX + 'px';
+  hand.style.top = startY + 'px';
+  document.body.appendChild(hand);
+  // 날아가는 소리 (샤샤삭)
+  playWhoosh();
+  requestAnimationFrame(() => {
+    hand.style.left = targetX + 'px';
+    hand.style.top = targetY + 'px';
+    hand.style.transform = 'scale(0.9) rotate(' + angle + 'deg)';
+  });
+  // 도착: 손 커지면서 때리는 느낌
+  setTimeout(() => {
+    playPunch();
+    img.classList.add('punch-shake');
+    hand.style.transform = 'scale(1.6) rotate(' + (angle + 10) + 'deg)';
+    hand.style.opacity = '0.3';
+  }, 120);
+  setTimeout(() => { img.classList.remove('punch-shake'); hand.remove(); }, 350);
+});
+
+/* ── Sound Effects ── */
+let audioCtx;
+function getACtx() { if (!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+function playWhoosh() {
+  try {
+    const ctx = getACtx(), now = ctx.currentTime;
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.25, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random()*2-1) * (1 - i/data.length);
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter(); filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(2000, now);
+    filter.frequency.exponentialRampToValueAtTime(400, now + 0.25);
+    gain.gain.setValueAtTime(0.08, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    src.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+    src.start(now);
+  } catch(e) {}
+}
+function playMeow() {
+  try {
+    const ctx = getACtx(), now = ctx.currentTime;
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(800, now);
+    osc.frequency.linearRampToValueAtTime(500, now + 0.15);
+    osc.frequency.linearRampToValueAtTime(300, now + 0.4);
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.linearRampToValueAtTime(0, now + 0.4);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(now); osc.stop(now + 0.4);
+  } catch(e) {}
+}
+function playPunch() {
+  try {
+    const a = new Audio('asset/vfx.m4a');
+    a.volume = 0.5; a.play();
+  } catch(e) {}
+}
+
+$('easterPopup').addEventListener('click', (e) => {
+  if (e.target === $('easterPopup')) $('easterPopup').classList.remove('active');
+});
 
 initSetup();
 loadTemplates();
