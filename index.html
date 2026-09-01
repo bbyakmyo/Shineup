@@ -161,13 +161,14 @@ h1 {
 
   /* ── Reset Bar ── */
   .reset-bar {
-    display: flex; justify-content: center; margin-bottom: 8px;
+    display: flex; justify-content: center;
   }
   .reset-bar .action-btn {
-    padding: 10px 40px; font-size: 15px; font-weight: 900;
-    border: 2px solid #f09090; color: #f09090; border-radius: 14px;
+    padding: 6px 24px; font-size: 13px; font-weight: 700;
+    border: 2px solid #f09090; color: #f09090; border-radius: 12px;
     cursor: pointer; background: rgba(80,20,20,0.5);
     font-family: inherit; transition: all 0.15s;
+    white-space: nowrap;
   }
   .reset-bar .action-btn:hover { border-color: #ff6060; color: #ff6060; box-shadow: 0 0 12px rgba(240,80,80,0.4); }
   .setup-bar .action-btn {
@@ -792,7 +793,7 @@ h1 {
 <div class="game">
   <div class="link-bar">
     <a class="bingo-btn" href="https://bbyakmyo.github.io/TR21Bingo/">⭐ 21주년 스탬프 빙고</a>
-    <a class="vault-btn" href="https://bbyakmyo.github.io/TRVault/">🔐 스핑크스의 금고</a>
+    <a class="vault-btn" href="https://bbyakmyo.github.io/TRVault/">🔐 스핑크스의 황금 금고</a>
   </div>
   <div class="header-panel">
     <div class="title-row">
@@ -809,10 +810,10 @@ h1 {
         <button class="action-btn" id="startGameBtn" disabled>게임 시작 ▶</button>
       </div>
     </div>
-  </div>
 
-  <div class="reset-bar hidden" id="resetBar">
-    <button class="action-btn" id="restartBtn">↺ 리셋</button>
+    <div class="reset-bar hidden" id="resetBar">
+      <button class="action-btn" id="restartBtn">↺ 리셋</button>
+    </div>
   </div>
 
   <div class="game-ctrl hidden" id="gameCtrl">
