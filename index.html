@@ -7,9 +7,14 @@
 <title>얼티메이트 샤인 업! 프리즈마 진심 1000%</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+  button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
+  html { background: #080618; }
   body {
     min-height: 100vh;
+    min-height: 100dvh;
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
     display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
     padding: 20px 10px;
     background:
@@ -80,6 +85,17 @@ h1 {
     white-space: nowrap;
   }
   .guide-btn:hover { border-color: #e8c97a; color: #e8c97a; }
+
+  .bingo-btn {
+    position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 3px 8px; font-size: 12px; font-family: inherit;
+    border: 1px solid rgba(120,200,255,0.4); border-radius: 8px;
+    cursor: pointer; color: #a0d0ff; transition: all 0.2s;
+    background: rgba(20,60,110,0.4); line-height: 1.3;
+    white-space: nowrap; text-decoration: none;
+  }
+  .bingo-btn:hover { border-color: #a0d0ff; color: #e8f4ff; box-shadow: 0 0 8px rgba(120,200,255,0.3); }
 
  /* ── Input Timer Progress Bar (게이지 컨트롤 상단 가로줄) ── */
   .input-timer-bar {
@@ -248,7 +264,7 @@ h1 {
 
   /* ── Game Control Bar ── */
   .game-ctrl {
-    display: flex; align-items: center; justify-content: center; gap: 10px;
+    display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px;
     margin-top: 6px; padding: 6px 10px;
     background: rgba(0,0,0,0.22); border-radius: 10px;
     border: 1px solid rgba(160,124,197,0.2);
@@ -715,17 +731,34 @@ h1 {
     font-weight: 700; font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
   }
 
+  @media (max-width: 640px) {
+    h1 { font-size: 16px; flex-wrap: wrap; row-gap: 4px; column-gap: 6px; }
+    .h1-title { order: 0; flex: 1 1 100%; text-align: center; }
+    .title-btns { order: 2; position: static; transform: none; }
+    .bingo-btn { order: 1; position: static; transform: none; }
+  }
+
   @media (max-width: 480px) {
     body { padding: 6px; }
     .game { padding: 10px 6px; border-radius: 12px; }
-    h1 { font-size: 16px; }
     .setup-bar { gap: 4px; padding: 6px 8px; }
     table { font-size: 10px; }
     #log { height: 70px; }
     .gauge-wrap .label { font-size: 10px; }
-    .gauge-adj { padding: 4px 8px; font-size: 11px; min-width: 32px; }
-    #gaugeInput { width: 36px; font-size: 13px; }
+
+    .game-ctrl { gap: 6px; }
     .game-ctrl .action-btn { font-size: 10px; padding: 4px 10px; }
+
+    /* 게이지 컨트롤: 보드 위 절대배치 → 플로우(static)로 전환해 보드 하트와 겹침 방지 */
+    .gauge-ctrl-wrap { position: static; transform: none; width: 100%; margin: 0 0 6px; border-radius: 12px; }
+    .gauge-row { flex-wrap: wrap; row-gap: 4px; }
+    .gauge-adj { padding: 4px 6px; font-size: 10px; min-width: 28px; }
+    #gaugeInput { width: 32px; font-size: 12px; }
+    #gaugeSlider { width: 56px; }
+
+    .ai-split { flex-direction: column; }
+    .capture-actions { flex-wrap: wrap; gap: 8px; }
+    .capture-actions button { padding: 8px 14px; font-size: 12px; }
   }
 </style>
 </head>
@@ -733,7 +766,7 @@ h1 {
 <div class="stars" id="stars"></div>
 
 <div class="game">
-  <h1>✦ 얼티메이트 샤인 업! ✦<span class="title-btns"><button class="guide-btn" id="guideBtn" title="공략 가이드">📖 공략</button><button class="guide-btn" id="easterBtn" title="화풀이" style="border-color:#f09090;color:#f09090">💢 화풀이</button></span></h1>
+  <h1><a class="bingo-btn" href="https://bbyakmyo.github.io/TR21Bingo/" target="_blank" rel="noopener">🎯 빙고</a><span class="h1-title">✦ 얼티메이트 샤인 업! ✦</span><span class="title-btns"><button class="guide-btn" id="guideBtn" title="공략 가이드">📖 공략</button><button class="guide-btn" id="easterBtn" title="화풀이" style="border-color:#f09090;color:#f09090">💢 화풀이</button></span></h1>
 
   <div class="reset-bar hidden" id="resetBar">
     <button class="action-btn" id="restartBtn">↺ 리셋</button>
@@ -2922,7 +2955,13 @@ $('easterImg').addEventListener('click', () => {
 
 /* ── Sound Effects ── */
 let audioCtx;
-function getACtx() { if (!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+function getACtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended' && audioCtx.resume) {
+    try { audioCtx.resume().catch(()=>{}); } catch(e) {}
+  }
+  return audioCtx;
+}
 function playWhoosh() {
   try {
     const ctx = getACtx(), now = ctx.currentTime;
@@ -2956,8 +2995,28 @@ function playMeow() {
 const punchAudio = new Audio('asset/vfx.m4a');
 punchAudio.preload = 'auto';
 punchAudio.volume = 0.5;
+punchAudio.addEventListener('error', () => { punchAudio.broken = true; });
 function playPunch() {
-  try { punchAudio.currentTime = 0; punchAudio.play(); } catch(e) {}
+  // 모바일 자동재생 정책상 setTimeout 안에서의 Audio.play()가 차단될 수 있어,
+  // WebAudio 기반 타격음을 함께 재생 (위의 playWhoosh가 제스처로 컨텍스트를 잠금 해제함)
+  try {
+    const ctx = getACtx(), now = ctx.currentTime;
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.18, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random()*2-1) * Math.pow(1 - i/data.length, 2);
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter(); filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(500, now);
+    filter.frequency.exponentialRampToValueAtTime(120, now + 0.18);
+    gain.gain.setValueAtTime(0.25, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+    src.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+    src.start(now); src.stop(now + 0.2);
+  } catch(e) {}
+  try {
+    if (!punchAudio.broken) { const p = punchAudio.play(); if (p && p.catch) p.catch(()=>{}); }
+  } catch(e) {}
 }
 // 고양이 손 이미지 미리 로딩
 const preloadHands = [new Image(), new Image()];
@@ -2971,12 +3030,15 @@ $('easterPopup').addEventListener('click', (e) => {
 // 모바일 배경 3초 롱프레스
 let longPressTimer = 0;
 document.addEventListener('touchstart', (e) => {
+  if ($('easterPopup').classList.contains('active')) return;
+  clearTimeout(longPressTimer);
   longPressTimer = setTimeout(() => {
     $('easterPopup').classList.add('active');
   }, 3000);
 }, { passive: true });
 document.addEventListener('touchend', () => { clearTimeout(longPressTimer); });
 document.addEventListener('touchmove', () => { clearTimeout(longPressTimer); });
+document.addEventListener('touchcancel', () => { clearTimeout(longPressTimer); });
 
 initSetup();
 loadTemplates();
