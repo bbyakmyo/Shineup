@@ -819,7 +819,7 @@ h1 {
   <div class="game-ctrl hidden" id="gameCtrl">
     <button class="action-btn" id="prevStepBtn" title="이전">◀ 이전</button>
     <button class="action-btn" id="nextStepBtn" title="다음">다음 ▶</button>
-    <button class="action-btn" id="greenErrorBtn" title="초록 버프를 -20% 디버프로 뒤집어 시뮬레이션" style="margin-left:auto;border-color:#6bcb77;color:#6bcb77">💚 오류모드: OFF</button>
+    <button class="action-btn" id="greenBuffToggleBtn" title="초록 +20% 버프 효과 적용/비활성화" style="margin-left:auto;border-color:#6bcb77;color:#6bcb77">💚 버프: ON</button>
     <button class="action-btn" id="editStepBtn" title="남은 하트 색상 편집">✎ 편집</button>
   </div>
 
@@ -1124,7 +1124,7 @@ h1 {
         <tr><td>v13</td><td>스마트 게이지 숫자 입력 (즉시 반영 + 1초 딜레이)</td></tr>
         <tr><td>v14</td><td>보드 위 게이지 컨트롤 + 레인지 슬라이더</td></tr>
         <tr><td>v15</td><td>UI 개편: setup-bar 중앙정렬, 리셋바 분리, 공략/변경사항 버튼</td></tr>
-        <tr><td>v16</td><td>💚 오류모드 토글: 초록 성공 시 버프가 -20% 디버프로 뒤집힘 (EMGA AI 특화)</td></tr>
+        <tr><td>v16</td><td>💚 초록 버프 ON/OFF 토글: 초록 성공 시 +20% 버프 적용/비활성화 선택 가능</td></tr>
         <tr><td>v17</td><td>EMGA v2 (100만 회 검증): 게이지 비례 회피 + cascade 리스크, 승률 18.38% → 19.05%</td></tr>
       </table>
     </div>
@@ -1232,7 +1232,25 @@ let autoMode = false;        // 자동 입력 모드
 let autoIndex = 0;           // 현재 자동 입력 순서 인덱스
 const AUTO_SEQUENCE = [0,2,5,9,11,10,8,3,1,4,7,6];
 
-let greenErrorMode = false;  // true: 초록 성공 시 버프가 -20% 디버프로 뒤집힘 (오류 모델)
+let greenBuffEnabled = false; // 기본 OFF. 초록 하트 활성화 시 자동 ON. 사용자가 수동 토글 가능.
+
+function syncGreenBuffUI() {
+  const btn = $('greenBuffToggleBtn');
+  if (!btn) return;
+  if (greenBuffEnabled) {
+    btn.textContent = '💚 버프: ON';
+    btn.style.borderColor = '#6bcb77';
+    btn.style.color = '#6bcb77';
+  } else {
+    btn.textContent = '💚 버프: OFF';
+    btn.style.borderColor = '#8070a0';
+    btn.style.color = '#8070a0';
+  }
+  const cell = $('greenEffectCell');
+  if (cell) cell.textContent = greenBuffEnabled ? '다음 성공률 +20%' : '효과 없음 (OFF)';
+  const guide = $('greenGuideEffect');
+  if (guide) guide.textContent = greenBuffEnabled ? '다음 +20% 버프' : '효과 없음 (OFF)';
+}
 
 function syncGauge(val) {
   $('gaugeInput').value = val;
@@ -1598,7 +1616,13 @@ function onHeartClick(h) {
   lastClickTime = now;
   if (!h||!h.el) return;
 
-  state.attempts++; state.buff = 0;
+  state.attempts++;
+  // 버프 소비: 버프가 켜져 있고 지금 누른 하트가 초록이 아니면 버프가 소모되어 OFF
+  if (greenBuffEnabled && h.color !== 'green') {
+    greenBuffEnabled = false;
+    syncGreenBuffUI();
+  }
+  state.buff = 0;
   if (h.color === 'blue') state.consecBlue = (state.consecBlue || 0) + 1; else state.consecBlue = 0;
 
   // Always succeed
@@ -1639,13 +1663,11 @@ function applyEffect(h) {
       log(`→ 사랑과 정의의 힘 +${YELLOW_HEAL} 회복!`, 'effect');
       break;
     case 'green':
-      if (greenErrorMode) {
-        state.buff -= GREEN_BUFF;
-        log(`→ [오류] 다음 성공률 -${Math.round(GREEN_BUFF*100)}% 하락! (버프가 뒤집힘)`, 'effect');
-      } else {
-        state.buff += GREEN_BUFF;
-        log(`→ 다음 성공률 +${Math.round(GREEN_BUFF*100)}% 상승!`, 'effect');
-      }
+      // 초록 하트 활성화 시 버프 자동 ON
+      if (!greenBuffEnabled) greenBuffEnabled = true;
+      syncGreenBuffUI();
+      state.buff += GREEN_BUFF;
+      log(`→ 다음 성공률 +${Math.round(GREEN_BUFF*100)}% 상승!`, 'effect');
       break;
     case 'rainbow': {
       const chain = CHAIN_MAP[h.id] || [h.id];
@@ -1745,7 +1767,7 @@ function aiAnalyze() {
     } else if (h.color === 'yellow') {
       special = '게이지 +15 회복';
     } else if (h.color === 'green') {
-      special = greenErrorMode ? '다음 성공률 -20% 디버프 (오류)' : '다음 성공률 +20% 버프';
+      special = greenBuffEnabled ? '다음 성공률 +20% 버프' : '버프 OFF (효과 없음)';
     } else if (h.color === 'blue') {
       special = '전체 색상 랜덤 재배치';
     }
@@ -1765,7 +1787,7 @@ function aiAnalyze() {
       if (gaugeRatio < 0.90) bonus += 12 * prob;
       special = `게이지 +15 회복 (≈+${bonus.toFixed(1)}점 가치)`;
     } else if (h.color === 'green') {
-      special = greenErrorMode ? '다음 성공률 -20% 디버프 (오류)' : '다음 성공률 +20% 버프';
+      special = greenBuffEnabled ? '다음 성공률 +20% 버프' : '버프 OFF (효과 없음)';
     } else if (h.color === 'blue') {
       const others = candidates.filter(c => c.id !== h.id);
       const remaining = others.length;
@@ -1783,10 +1805,9 @@ function aiAnalyze() {
     }
 
     // 초록 콤보 보너스: 미개봉 레인보우 있을 때 버프 → 레인보우 콤보 가치
-    // 오류 모드: 별도 특화 알고리즘에서 처리 (아래 score 계산 후 overlay)
     const hasUnopenedRainbow = hearts.some(x => x.color === 'rainbow' && !state.opened.has(x.id));
     if (h.color === 'green' && hasUnopenedRainbow && state.buff === 0) {
-      if (!greenErrorMode) {
+      if (greenBuffEnabled) {
         bonus += 0.20 * 3.2 * 10 * 0.50; // 50% 성공 × 20% × 3.2×10
         special += ' (레인보우 콤보)';
       }
@@ -1803,102 +1824,6 @@ function aiAnalyze() {
     const continuousRisk = expectedDmg * Math.max(0, 0.4 - gaugeRatio) * 2.0;
 
     let score = prob * heartsGain * 10 + bonus - expectedDmg - continuousRisk;
-
-    // ── 오류 모드 특화 초록 알고리즘 (EMGA: Error-Mode Green Algorithm) ──
-    // 기존 EV2는 -20% 디버프 상황을 제대로 반영하지 못하므로, 초록 하트에 대해 별도 평가
-    if (greenErrorMode && h.color === 'green') {
-      const GREEN_DEBUFF = GREEN_BUFF; // 0.20
-
-      // (1) 디버프 흡수 후보 평가: 초록 성공 후 -20% 디버프를 가장 안전한 다음 하트에 얹을 시 피해
-      const nextCands = candidates.filter(c => c.id !== h.id);
-      let bestAbsorbProb = 0;
-      let bestAbsorbName = '없음';
-      let bestAbsorbAvgDmg = 0;
-      let absorbSafety = 'none'; // 'safe'(빨강/노랑) | 'risky'(파랑) | 'critical'(레인보우) | 'none'
-      let hasRedAbsorb = false;
-      let hasYellowAbsorb = false;
-      let hasGreenNext = false;
-      let hasRainbowNext = false;
-
-      for (const c of nextCands) {
-        const dp = Math.max(0, COLOR_STATS[c.color].prob - GREEN_DEBUFF);
-        const st = COLOR_STATS[c.color];
-        const avgD = (st.failMin + st.failMax) / 2;
-        // 가장 prob 높은 흡수 후보 선택 → 실패 확률 낮출 것
-        if (dp > bestAbsorbProb) {
-          bestAbsorbProb = dp;
-          bestAbsorbName = st.name;
-          bestAbsorbAvgDmg = avgD;
-          absorbSafety = (c.color === 'red' || c.color === 'yellow') ? 'safe'
-                       : (c.color === 'blue' || c.color === 'green') ? 'risky'
-                       : (c.color === 'rainbow') ? 'critical' : 'none';
-        }
-        if (c.color === 'red') hasRedAbsorb = true;
-        if (c.color === 'yellow') hasYellowAbsorb = true;
-        if (c.color === 'green') hasGreenNext = true;
-        if (c.color === 'rainbow') hasRainbowNext = true;
-      }
-
-      // (2) 디버프 얹힐 다음 하트의 기대 피해 (초록 다음 턴 비용)
-      const absorbDmg = (1 - bestAbsorbProb) * bestAbsorbAvgDmg;
-
-      // (3) 미개봉 레인보우 강제 위험: 안전 흡수 후보 없으면 레인보우(35→15%)로 디버프 강제
-      const hasUnopenedRb = nextCands.some(c => c.color === 'rainbow');
-      // 100만 회 시뮬레이션 검증: 빨강/노랑 흡수 후보 있으면 rb 리스크 절반 (안전 하트에 얹을 수 있으니)
-      const rbRiskRaw = hasUnopenedRb
-        ? (absorbSafety === 'safe' ? 3.0
-          : absorbSafety === 'risky' ? 6.0
-          : absorbSafety === 'critical' ? 12.0
-          : 10.0)
-        : 0;
-      const rbRisk = (hasRedAbsorb || hasYellowAbsorb)
-        ? rbRiskRaw * 0.5
-        : rbRiskRaw;
-
-      // (4) 초록 회피 가중치 (게이지 비례): 안전 하트가 많이 남았을수록, 저게이지일수록 회피 강하게
-      //      gaugeMult = 1.0 + (1-gRatio) × 2.0  (게이지 100→1배, 게이지 0→3배)
-      const safeRemaining = nextCands.filter(c => ['red','yellow','blue'].includes(c.color)).length;
-      const gaugeMult = 1.0 + (1 - gaugeRatio) * 2.0;
-      const avoidance = (5.0 + safeRemaining * 2.0 + (safeRemaining >= 3 ? 5.0 : 0)) * gaugeMult;
-
-      // (5) 강제 상황: 안전 하트 0개 → 초록·레인보우뿐 → 어쩔 수 없이
-      const forced = safeRemaining === 0;
-      // (5-1) cascade risk: 강제 상황에서 다음 초록/레인보우에 디버프 연쇄 → 리스크 가중
-      let cascadeRisk = 0;
-      if (forced) {
-        cascadeRisk = (hasGreenNext ? 5.0 : 0) + (hasRainbowNext ? 8.0 : 0);
-      }
-
-      // (6) 흡수 보너스: 빨강 65→45% / 노랑 55→35% 감내 가능 (시뮬레이션 튜닝 값)
-      const redAbsorb = hasRedAbsorb ? 4.0 : 0;
-      const yellowAbsorb = hasYellowAbsorb ? 2.0 : 0;
-
-      // (7) 점수 덮어쓰기 (기존 EV2 무시, 오류모드 특화) - 100만 회 시뮬레이션 최종 검증
-      score = prob * heartsGain * 10
-            - absorbDmg
-            - rbRisk
-            - avoidance
-            - cascadeRisk
-            - continuousRisk
-            + redAbsorb
-            + yellowAbsorb
-            + (forced ? 10.0 : 0);
-
-      // (8) special 텍스트
-      const absorbTxt = bestAbsorbName === '없음'
-        ? '[마지막 하트]'
-        : `${bestAbsorbName}${Math.round(bestAbsorbProb*100)}%`;
-      const safetyTag = absorbSafety === 'safe' ? '안전흡수'
-                     : absorbSafety === 'risky' ? '위험흡수'
-                     : absorbSafety === 'critical' ? '위험!'
-                     : '';
-      special = `[오류] 디버프 -20% 흡수: ${absorbTxt}${safetyTag ? ' (' + safetyTag + ')' : ''} · 회피 -${avoidance.toFixed(1)}점 (g×${gaugeMult.toFixed(1)})`
-              + (rbRisk ? ` · 레인보우 리스크 -${rbRisk.toFixed(1)}` : '')
-              + (redAbsorb ? ` · 빨강흡수 +${redAbsorb}` : '')
-              + (yellowAbsorb ? ` · 노랑흡수 +${yellowAbsorb}` : '')
-              + (cascadeRisk ? ` · 연쇄리스크 -${cascadeRisk}` : '')
-              + (forced ? ' · ⚠️ 강제' : '');
-    }
 
     // ── 그룹 가중치 모드 (ev_group) ──
     let groupBonus = 0;
@@ -1949,7 +1874,6 @@ function aiAnalyze() {
   r += `게이지: <span class="ai-hl">${state.gauge}</span> (${Math.round(gaugeRatio*100)}%)`;
   if (state.buff > 0) r += ` | 버프: <span class="ai-hl">+${Math.round(state.buff*100)}%</span>`;
   else if (state.buff < 0) r += ` | 디버프: <span class="ai-hl" style="color:#f09090">${Math.round(state.buff*100)}%</span>`;
-  if (greenErrorMode) r += ` | <span class="ai-hl" style="color:#6bcb77">오류모드</span>`;
   if (groupPriority.length > 0) {
     r += ` | 그룹: <span class="ai-hl">${groupPriority.map(g=>g+'그룹').join(', ')}</span>`;
   } else {
@@ -1979,24 +1903,6 @@ function aiAnalyze() {
 
   if (gaugeRatio < 0.20 && top.expectedDmg > state.gauge * 0.6) {
     $('aiReasoning').innerHTML += ' ⚠️ 위험!';
-  }
-
-  // 오류 모드일 때 추가 전략 힌트
-  if (greenErrorMode && !state.over) {
-    const allCandidates = hearts.filter(hh => !state.opened.has(hh.id));
-    const greenCount = allCandidates.filter(c => c.color === 'green').length;
-    const safeCount = allCandidates.filter(c => ['red','yellow','blue'].includes(c.color)).length;
-    let strategyNote = '';
-    if (greenCount === 0) {
-      strategyNote = ' · [오류모드] 초록 없음: 정상 전략 적용.';
-    } else if (safeCount >= 3) {
-      strategyNote = ` · [오류모드] 초록 ${greenCount}개 회피 우선 → 안전 하트부터.`;
-    } else if (safeCount > 0) {
-      strategyNote = ` · [오류모드] 안전 흡수 후보 ${safeCount}개 → 초록 후 빨강으로 디버프 흡수 권장.`;
-    } else {
-      strategyNote = ` · [오류모드] 안전 흡수 후보 ${safeCount}개 → 강제 상황, 디버프는 어쩔 수 없이 레인보우/초록에 얹힘.`;
-    }
-    $('aiReasoning').innerHTML += strategyNote;
   }
 
   aiChoice = top.heart;
@@ -2887,23 +2793,10 @@ $('nextStepBtn').addEventListener('click', () => {
   if (historyIdx < history.length - 1) { historyIdx++; restoreState(history[historyIdx]); }
 });
 
-// Green error mode toggle (초록 +20% 버프 ↔ -20% 디버프)
-$('greenErrorBtn').addEventListener('click', () => {
-  greenErrorMode = !greenErrorMode;
-  const btn = $('greenErrorBtn');
-  if (greenErrorMode) {
-    btn.textContent = '💚 오류모드: ON';
-    btn.style.borderColor = '#ff5f7e';
-    btn.style.color = '#ff5f7e';
-  } else {
-    btn.textContent = '💚 오류모드: OFF';
-    btn.style.borderColor = '#6bcb77';
-    btn.style.color = '#6bcb77';
-  }
-  const cell = $('greenEffectCell');
-  if (cell) cell.textContent = greenErrorMode ? '다음 성공률 -20%' : '다음 성공률 +20%';
-  const guide = $('greenGuideEffect');
-  if (guide) guide.textContent = greenErrorMode ? '다음 -20% 디버프' : '다음 +20% 버프';
+// Green buff effect toggle (초록 +20% 버프 효과 적용/비활성화)
+$('greenBuffToggleBtn').addEventListener('click', () => {
+  greenBuffEnabled = !greenBuffEnabled;
+  syncGreenBuffUI();
   if (mode === 'play' && !state.over) aiAnalyze();
 });
 
@@ -3097,6 +2990,7 @@ document.addEventListener('touchcancel', () => { clearTimeout(longPressTimer); }
 
 initSetup();
 loadTemplates();
+syncGreenBuffUI();
 </script>
 </body>
 </html>
